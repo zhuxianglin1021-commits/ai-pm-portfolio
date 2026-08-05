@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transit — JD 路线图生成器</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ====== Design Tokens ====== */
+    :root {
+      --bg: #EEF0EC;
+      --bg-card: #FFFFFF;
+      --text-primary: #1A2330;
+      --text-secondary: #6B7585;
+      --text-tertiary: #A0A8B4;
+      --line-gray: #C7CBD1;
+      --border: #E2E5E1;
+      --border-hover: #C7CBD1;
+
+      --l1: #E15A42;
+      --l2: #1D8F80;
+      --l3: #E5A23A;
+      --l4: #3E5FCC;
+      --l5: #8A5FBF;
+
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-xs: 0 1px 2px rgba(26,35,48,0.04);
+      --shadow-sm: 0 1px 3px rgba(26,35,48,0.05), 0 1px 2px rgba(26,35,48,0.03);
+      --shadow: 0 4px 6px -1px rgba(26,35,48,0.05), 0 2px 4px -1px rgba(26,35,48,0.03), 0 0 0 1px rgba(26,35,48,0.02);
+      --shadow-lg: 0 20px 40px -8px rgba(26,35,48,0.12), 0 8px 16px -4px rgba(26,35,48,0.06), 0 0 0 1px rgba(26,35,48,0.03);
+      --shadow-glow: 0 0 30px rgba(26,35,48,0.06);
+
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    /* ====== Reset ====== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 900px 500px at 50% -80px, rgba(62,95,204,0.05), transparent),
+        radial-gradient(ellipse 700px 400px at 80% 20%, rgba(138,95,191,0.03), transparent),
+        radial-gradient(circle at 1px 1px, rgba(26,35,48,0.022) 1px, transparent 0);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+      background-attachment: fixed;
+    }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    textarea { font-family: inherit; }
+    ::selection { background: rgba(225,90,66,0.12); }
+
+    /* ====== Layout ====== */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+    /* ====== Hero ====== */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      position: relative;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+    }
+    .hero-tag .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--l1);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #1A2330 0%, #2A3B5C 45%, #3E5FCC 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* Animated metro illustration */
+    .hero-metro {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      height: 44px;
+    }
+    .hero-metro .track {
+      width: 100px; height: 3px;
+      background: var(--line-gray);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-metro .track::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -30px;
+      width: 30px; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+      animation: trackFlow 2.5s linear infinite;
+    }
+    @keyframes trackFlow {
+      to { left: 130px; }
+    }
+    .hero-metro .station {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 3px solid var(--bg);
+      z-index: 1;
+      animation: stationBlink 3s ease-in-out infinite;
+    }
+    .hero-metro .station.s1 { background: var(--l1); animation-delay: 0s; }
+    .hero-metro .station.s2 { background: var(--l2); animation-delay: 0.4s; }
+    .hero-metro .station.s3 { background: var(--l3); animation-delay: 0.8s; }
+    .hero-metro .station.s4 { background: var(--l4); animation-delay: 1.2s; }
+    @keyframes stationBlink {
+      0%, 80%, 100% { box-shadow: 0 0 0 0 currentColor; }
+      40% { box-shadow: 0 0 0 6px transparent; }
+    }
+
+    /* ====== Input Section ====== */
+    .input-section { padding: 0 0 56px; }
+
+    .input-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .input-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--l1), var(--l3) 33%, var(--l4) 66%, var(--l5));
+      opacity: 0.7;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .input-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .input-group label .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      background: var(--text-primary);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .input-group textarea {
+      width: 100%;
+      min-height: 170px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: #FAFBF9;
+      resize: vertical;
+      transition: var(--transition);
+    }
+    .input-group textarea:focus {
+      outline: none;
+      border-color: var(--l4);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(62,95,204,0.06);
+    }
+    .input-group textarea::placeholder {
+      color: var(--text-tertiary);
+      font-size: 13px;
+    }
+    .input-hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+
+    /* ====== Buttons ====== */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 15px 24px;
+      border-radius: var(--radius-sm);
+      background: var(--text-primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(62,95,204,0.4), rgba(138,95,191,0.3));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-primary:hover:not(:disabled)::after { opacity: 1; }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,35,48,0.2);
+    }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-primary .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .btn-secondary:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--l2);
+      background: rgba(29,143,128,0.06);
+      color: var(--l2);
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .btn-demo:hover {
+      background: rgba(29,143,128,0.12);
+      box-shadow: 0 4px 12px rgba(29,143,128,0.15);
+    }
+
+    .input-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .input-actions .btn-primary { flex: 1; }
+    .input-actions .btn-secondary,
+    .input-actions .btn-demo { white-space: nowrap; }
+
+    /* ====== Error Banner ====== */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-top: 20px;
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .error-banner .error-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #EF4444;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .error-banner .error-text { flex: 1; }
+    .error-banner .error-text strong {
+      display: block;
+      font-size: 14px;
+      color: #991B1B;
+      margin-bottom: 2px;
+    }
+    .error-banner .error-text span {
+      font-size: 13px;
+      color: #B91C1C;
+      line-height: 1.5;
+    }
+    .error-banner .btn-retry {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #EF4444;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .error-banner .btn-retry:hover { background: #DC2626; }
+
+    /* ====== Results ====== */
+    .results-section { padding-bottom: 80px; }
+    .results-section.empty .empty-state { display: block; }
+    .results-section:not(.empty) .empty-state { display: none; }
+
+    .empty-state {
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .empty-state svg { margin-bottom: 16px; opacity: 0.3; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+    .results-header h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+    .results-header .count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px 10px;
+    }
+
+    /* ====== Metro Line Container ====== */
+    .metro-container {
+      position: relative;
+      padding-left: 56px;
+    }
+    /* Vertical line — default hidden, animates in */
+    .metro-container::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 12px;
+      bottom: 12px;
+      width: 4px;
+      background: linear-gradient(180deg, var(--line-gray) 0%, var(--line-gray) 100%);
+      border-radius: 2px;
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .metro-container.animate::before {
+      transform: scaleY(1);
+    }
+
+    /* ====== Stations ====== */
+    /* Origin */
+    .origin-station {
+      position: relative;
+      margin-bottom: 32px;
+    }
+    .origin-station .station-dot {
+      position: absolute;
+      left: -44px;
+      top: 2px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: 4px solid var(--bg);
+      z-index: 2;
+      transform: scale(0);
+      transition: transform 0.4s var(--transition-bounce);
+    }
+    .metro-container.animate .origin-station .station-dot {
+      transform: scale(1);
+      transition-delay: 0.1s;
+    }
+    .origin-station .station-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 5px 14px;
+      display: inline-block;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .metro-container.animate .origin-station .station-label {
+      opacity: 1;
+      transition-delay: 0.15s;
+    }
+    .origin-station .station-label strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* Station card */
+    .station-card {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .station-card .station-dot {
+      position: absolute;
+      left: -44px;
+      top: 28px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--line-color);
+      border: 4px solid var(--bg);
+      z-index: 2;
+      transform: scale(0);
+      transition: transform 0.4s var(--transition-bounce);
+    }
+    .metro-container.animate .station-card .station-dot {
+      transform: scale(1);
+    }
+    /* Glow ring on station */
+    .station-card .station-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--line-color);
+      opacity: 0;
+    }
+    .metro-container.animate .station-card .station-dot::after {
+      animation: ringPulse 0.8s ease-out forwards;
+    }
+    @keyframes ringPulse {
+      0% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0; transform: scale(2.5); }
+    }
+
+    /* Card inner */
+    .card-inner {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      transition: box-shadow 0.3s, transform 0.3s;
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    .metro-container.animate .card-inner {
+      animation: cardSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes cardSlideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .card-inner:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateX(0) translateY(-3px);
+    }
+    /* Top accent line in card color */
+    .card-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--line-color);
+      opacity: 0.85;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 24px 0;
+    }
+    .line-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px; height: 28px;
+      padding: 0 10px;
+      border-radius: 7px;
+      background: var(--line-color);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px color-mix(in srgb, var(--line-color) 35%, transparent);
+    }
+    .card-header h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .card-body { padding: 16px 24px 24px; }
+
+    .card-field { margin-bottom: 16px; }
+    .card-field:last-child { margin-bottom: 0; }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .field-label svg { width: 13px; height: 13px; opacity: 0.6; }
+
+    .jd-quote {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      background: #F6F7F4;
+      border-left: 3px solid var(--line-color);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      line-height: 1.6;
+    }
+    .project-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .project-brief {
+      font-size: 14px;
+      color: #3A4350;
+      line-height: 1.75;
+    }
+    .why-it-proves {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      font-style: italic;
+      padding: 12px 16px;
+      background: #F8F9F6;
+      border-radius: 8px;
+      border: 1px solid #EFF1EC;
+    }
+    .why-it-proves::before {
+      content: '\203A\203A  ';
+      font-family: var(--font-mono);
+      font-style: normal;
+      color: var(--line-color);
+      font-weight: 700;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #EEF0EC;
+    }
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--line-color);
+      background: var(--line-bg, rgba(0,0,0,0.03));
+      border-radius: 16px;
+      padding: 4px 12px;
+    }
+    .time-badge svg { width: 13px; height: 13px; }
+
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: var(--transition);
+    }
+    .btn-copy:hover { color: var(--text-primary); background: #F4F5F3; }
+    .btn-copy svg { width: 14px; height: 14px; }
+    .btn-copy.copied { color: var(--l2); }
+
+    /* Destination */
+    .dest-station {
+      position: relative;
+      margin-top: 12px;
+    }
+    .dest-station .station-dot {
+      position: absolute;
+      left: -44px;
+      top: 0;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 3px solid var(--line-gray);
+      z-index: 2;
+      transform: scale(0);
+      transition: transform 0.4s var(--transition-bounce);
+    }
+    .metro-container.animate .dest-station .station-dot {
+      transform: scale(1);
+    }
+    .dest-station .station-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .metro-container.animate .dest-station .station-label {
+      opacity: 1;
+    }
+
+    /* ====== Toast ====== */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--text-primary);
+      color: #fff;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 200;
+      opacity: 0;
+      transition: 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ====== Footer ====== */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+    }
+    footer .metro-end {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    footer .metro-end .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid var(--line-gray);
+    }
+    footer .metro-end .track {
+      width: 40px; height: 2px; background: var(--line-gray);
+    }
+    footer p {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    footer p strong {
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* ====== Agent Thinking Panel ====== */
+    .thinking-panel {
+      margin-bottom: 32px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: slideDown 0.3s ease;
+    }
+    .thinking-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: #FAFBF9;
+      border-bottom: 1px solid var(--border);
+    }
+    .thinking-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .thinking-header .agent-badge {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #3E5FCC, #8A5FBF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .thinking-header .title-text {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .thinking-header .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--l2);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .thinking-header .status-dot.done {
+      background: var(--text-tertiary);
+      animation: none;
+    }
+    .thinking-toggle {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: var(--transition);
+    }
+    .thinking-toggle:hover { color: var(--text-primary); background: #F4F5F3; }
+
+    .thinking-steps {
+      padding: 12px 20px;
+      max-height: 420px;
+      overflow-y: auto;
+      transition: max-height 0.3s ease;
+    }
+    .thinking-panel.collapsed .thinking-steps {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      animation: stepFadeIn 0.3s ease;
+    }
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .step-icon {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .step-icon.thinking { background: rgba(62,95,204,0.1); color: #3E5FCC; }
+    .step-icon.tool { background: rgba(225,90,66,0.1); color: #E15A42; }
+    .step-icon.result { background: rgba(29,143,128,0.1); color: #1D8F80; }
+    .step-icon.final { background: rgba(138,95,191,0.1); color: #8A5FBF; }
+    .step-icon.error { background: rgba(239,68,68,0.1); color: #EF4444; }
+
+    .step-content { flex: 1; min-width: 0; }
+    .step-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .step-detail {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .step-detail .ref-list {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .step-detail .ref-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      padding: 2px 8px;
+      background: #F6F7F4;
+      border-radius: 4px;
+    }
+    .step-detail .ref-item a {
+      color: #3E5FCC;
+      text-decoration: none;
+    }
+    .step-detail .ref-item a:hover { text-decoration: underline; }
+
+    /* ====== Responsive ====== */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 38px; letter-spacing: -1px; }
+      .hero { padding: 48px 20px 36px; }
+      .input-card { padding: 24px; }
+      .input-row { grid-template-columns: 1fr; gap: 16px; }
+      .metro-container { padding-left: 40px; }
+      .metro-container::before { left: 16px; }
+      .origin-station .station-dot,
+      .station-card .station-dot,
+      .dest-station .station-dot { left: -32px; }
+      .card-header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 18px 18px 0; }
+      .card-body { padding: 12px 18px 18px; }
+      .input-actions { flex-direction: column; }
+      .input-actions .btn-secondary,
+      .input-actions .btn-demo { width: 100%; justify-content: center; }
+    }
+
+    /* ====== Project Nav ====== */
+    .project-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 4px;
+      height: 44px;
+      align-items: center;
+    }
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-display);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 100px;
+      transition: var(--transition);
+    }
+    .nav-item:hover {
+      background: rgba(26,35,48,0.04);
+      color: var(--text-primary);
+    }
+    .nav-item.active {
+      background: var(--text-primary);
+      color: #fff;
+    }
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== Project Nav ====== -->
+  <nav class="project-nav">
+    <div class="nav-inner">
+      <a href="/voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
+      <a href="/index.html" class="nav-item active"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
+      <a href="/screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        Paste JD &middot; Get Route
+      </div>
+      <div class="hero-metro">
+        <div class="station s1"></div>
+        <div class="track"></div>
+        <div class="station s2"></div>
+        <div class="track"></div>
+        <div class="station s3"></div>
+        <div class="track"></div>
+        <div class="station s4"></div>
+      </div>
+      <h1>Transit</h1>
+      <p class="subtitle">把招聘JD拆成你今天就走得通的轨道线<br>每个能力点都是一站，每站都有可动手的项目</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+
+    <!-- Input -->
+    <section class="input-section">
+      <div class="input-card">
+        <div class="input-row">
+          <div class="input-group">
+            <label>
+              <span class="num">1</span>
+              岗位职责
+            </label>
+            <textarea id="input-responsibilities" placeholder="例：&#10;1. 负责AI产品的需求分析和产品规划，输出PRD文档&#10;2. 与算法团队协作，推动模型迭代和效果优化&#10;3. 设计产品交互方案，跟踪用户反馈&#10;4. 跟踪行业动态，输出竞品分析报告"></textarea>
+            <p class="input-hint">粘贴岗位「岗位职责 / 岗位描述」部分的完整文本</p>
+          </div>
+          <div class="input-group">
+            <label>
+              <span class="num">2</span>
+              任职要求
+            </label>
+            <textarea id="input-requirements" placeholder="这部分信息密度更高，是能力点提取的主要依据&#10;&#10;例：&#10;1. 本科及以上学历，计算机或相关专业优先&#10;2. 熟悉大语言模型基本原理，有AI产品实操经验优先&#10;3. 具备数据分析能力，能从数据中提炼产品洞察&#10;4. 熟练使用SQL、Python进行数据处理"></textarea>
+            <p class="input-hint">能力点提取优先来源于此部分，请尽量完整</p>
+          </div>
+        </div>
+        <div class="input-actions">
+          <button class="btn-primary" id="btn-generate" onclick="handleGenerate()">
+            <span>生成路线图</span>
+          </button>
+          <button class="btn-secondary" onclick="loadDemo()">加载示例 JD</button>
+          <button class="btn-demo" onclick="showDemoDirect()">Demo</button>
+        </div>
+
+      </div>
+
+      <!-- Error banner -->
+      <div class="error-banner" id="error-banner" style="display:none;">
+        <div class="error-icon">!</div>
+        <div class="error-text">
+          <strong id="error-title">生成失败</strong>
+          <span id="error-msg">请检查网络后重试</span>
+        </div>
+        <button class="btn-retry" onclick="handleGenerate()">重试</button>
+        <button class="btn-demo" onclick="showDemoDirect()">查看 Demo</button>
+      </div>
+    </section>
+
+    <!-- Agent Thinking Panel -->
+    <section class="container">
+      <div class="thinking-panel" id="thinking-panel" style="display:none;">
+        <div class="thinking-header">
+          <div class="thinking-header-left">
+            <div class="agent-badge">A</div>
+            <span class="title-text">Agent 思考过程</span>
+            <span class="status-dot" id="thinking-status"></span>
+          </div>
+          <button class="thinking-toggle" onclick="toggleThinking()">收起</button>
+        </div>
+        <div class="thinking-steps" id="thinking-steps"></div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="results-section empty" id="results-section">
+      <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#C7CBD1" stroke-width="2">
+          <circle cx="16" cy="20" r="6"/>
+          <circle cx="48" cy="44" r="6"/>
+          <path d="M16 26 L16 38 Q16 44 22 44 L42 44" stroke-dasharray="4 4"/>
+        </svg>
+        <p style="font-size:14px;color:var(--text-tertiary);">粘贴 JD 并点击「生成路线图」后，<br>这里会展示你的能力轨道线</p>
+      </div>
+      <div id="results-content"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="metro-end">
+      <div class="dot"></div>
+      <div class="track"></div>
+      <div class="dot"></div>
+    </div>
+    <p><strong>Transit</strong> &middot; 把招聘要求变成走得通的路径</p>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ====== Constants ====== */
+    const LINE_COLORS = ['#E15A42', '#1D8F80', '#E5A23A'];
+    const LINE_NAMES = ['L1', 'L2', 'L3'];
+    const LINE_BG = [
+      'rgba(225,90,66,0.08)',
+      'rgba(29,143,128,0.08)',
+      'rgba(229,162,58,0.08)'
+    ];
+
+    const SYSTEM_PROMPT = `你是一名职业发展顾问 Agent。用户会给你一段招聘JD（岗位职责+任职要求），你的任务是帮应届生把JD里的能力要求转化为可以立刻动手做的作品集项目建议。
+
+工作流程：
+1. 先分析JD，提取出恰好3个最核心的能力要求，优先来自"任职要求"部分。
+2. 对每个能力点，使用 search_github 工具搜索相关的开源项目作为参考（每次搜索用不同的英文关键词）。
+3. 如果某个能力点涉及数据分析，使用 search_datasets 工具搜索可用的公开数据集。
+4. 基于搜索到的真实资源，生成具体的项目建议。
+
+规则：
+- 恰好输出3个项目建议，不要多也不要少。
+- 每个项目建议必须引用搜索到的真实项目或数据集作为参考。
+- 引用JD原文中最能体现该能力要求的一句话（30字以内）。
+- 项目建议要具体到今天就能开始写第一行代码，不能是空泛表述。
+- 说明为什么这个项目能证明该能力，1-2句话。
+- 给出预估完成时间。
+- 默认用户是应届生、零项目经验的求职者。
+
+最终输出格式为JSON数组（不要markdown代码块标记，不要任何前言解释）：
+[{"skill":"能力名称","jd_quote":"JD原文节选","project_title":"项目名称","project_brief":"具体做什么，产出什么形式","why_it_proves":"为什么能证明","estimated_time":"预估耗时","references":[{"name":"名称","url":"链接","type":"github或dataset"}]}]
+
+重要：在生成最终JSON之前，务必先调用工具搜索真实资源。不要跳过工具直接生成。`;
+
+    /* ====== DOM ====== */
+    const $ = id => document.getElementById(id);
+    const inputResp = $('input-responsibilities');
+    const inputReq = $('input-requirements');
+    const btnGenerate = $('btn-generate');
+    const errorBanner = $('error-banner');
+    const errorTitle = $('error-title');
+    const errorMsg = $('error-msg');
+    const resultsSection = $('results-section');
+    const resultsContent = $('results-content');
+    const toast = $('toast');
+
+    /* ====== Toast ====== */
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    /* ====== Agent Thinking Panel ====== */
+    const thinkingPanel = $('thinking-panel');
+    const thinkingSteps = $('thinking-steps');
+    const thinkingStatus = $('thinking-status');
+
+    function showThinking() {
+      thinkingPanel.style.display = 'block';
+      thinkingPanel.classList.remove('collapsed');
+      thinkingSteps.innerHTML = '';
+      thinkingStatus.classList.remove('done');
+    }
+
+    function hideThinking() {
+      thinkingPanel.style.display = 'none';
+    }
+
+    function toggleThinking() {
+      thinkingPanel.classList.toggle('collapsed');
+      const btn = thinkingPanel.querySelector('.thinking-toggle');
+      btn.textContent = thinkingPanel.classList.contains('collapsed') ? '展开' : '收起';
+    }
+
+    function addStep(type, label, detailHtml) {
+      const icons = { thinking: '\u{1F4AD}', tool: '\u{1F50D}', result: '\u{2705}', final: '\u{2728}', error: '\u274C' };
+      const div = document.createElement('div');
+      div.className = 'step';
+      div.innerHTML = `
+        <div class="step-icon ${type}">${icons[type] || '\u2022'}</div>
+        <div class="step-content">
+          <div class="step-label">${escapeHtml(label)}</div>
+          ${detailHtml ? `<div class="step-detail">${detailHtml}</div>` : ''}
+        </div>
+      `;
+      thinkingSteps.appendChild(div);
+      thinkingSteps.scrollTop = thinkingSteps.scrollHeight;
+      return div;
+    }
+
+    function formatToolResult(name, result) {
+      if (!Array.isArray(result) || result.length === 0) {
+        return '<span style="color:var(--text-tertiary)">\u672a\u627e\u5230\u7ed3\u679c</span>';
+      }
+      const items = result.slice(0, 3).map(item => {
+        if (name === 'search_github') {
+          return `<div class="ref-item">${escapeHtml(item.name)} \u00b7 ${item.stars}\u2b50 \u00b7 <a href="${item.url}" target="_blank">\u94fe\u63a5</a></div>`;
+        }
+        if (name === 'search_datasets') {
+          return `<div class="ref-item">${escapeHtml(item.id)} \u00b7 ${item.downloads}\u6b21\u4e0b\u8f7d \u00b7 <a href="${item.url}" target="_blank">\u94fe\u63a5</a></div>`;
+        }
+        return `<div class="ref-item">${escapeHtml(JSON.stringify(item))}</div>`;
+      });
+      return `<div class="ref-list">${items.join('')}</div>`;
+    }
+
+    /* ====== Error ====== */
+    function showError(title, msg) {
+      errorTitle.textContent = title;
+      errorMsg.textContent = msg;
+      errorBanner.style.display = 'flex';
+    }
+    function hideError() {
+      errorBanner.style.display = 'none';
+    }
+
+    /* ====== Loading ====== */
+    function setLoading(loading) {
+      btnGenerate.disabled = loading;
+      if (loading) {
+        btnGenerate.innerHTML = '<span class="spinner"></span>';
+      } else {
+        btnGenerate.innerHTML = '<span>生成路线图</span>';
+      }
+    }
+
+    /* ====== Generate (Agent SSE mode) ====== */
+    async function handleGenerate() {
+      const resp = inputResp.value.trim();
+      const req = inputReq.value.trim();
+
+      if (!resp && !req) {
+        showToast('请至少填写一个输入框');
+        return;
+      }
+      if (!req) {
+        showToast('「任职要求」是能力点提取的主要依据，建议填写');
+      }
+
+      hideError();
+      setLoading(true);
+      resultsSection.classList.add('empty');
+      showThinking();
+
+      // Agent SSE mode
+      try {
+        const userPrompt = `岗位职责：\n${resp}\n\n任职要求：\n${req}`;
+        const response = await fetch('/api/agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userContent: userPrompt,
+            temperature: 0.7
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let finalContent = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const jsonStr = line.slice(6).trim();
+            if (!jsonStr) continue;
+
+            let event;
+            try { event = JSON.parse(jsonStr); } catch (e) { continue; }
+
+            switch (event.type) {
+              case 'thinking':
+                addStep('thinking', 'Agent 思考', escapeHtml(event.content));
+                break;
+
+              case 'tool_call':
+                const kw = event.args.keyword || JSON.stringify(event.args);
+                const toolLabel = event.name === 'search_github'
+                  ? `搜索 GitHub: "${escapeHtml(kw)}"`
+                  : event.name === 'search_datasets'
+                    ? `搜索数据集: "${escapeHtml(kw)}"`
+                    : `${event.name}(${escapeHtml(kw)})`;
+                addStep('tool', toolLabel, '');
+                break;
+
+              case 'tool_result':
+                const resultCount = Array.isArray(event.result) ? event.result.length : 0;
+                const detailHtml = formatToolResult(event.name, event.result);
+                addStep('result', `找到 ${resultCount} 条结果`, detailHtml);
+                break;
+
+              case 'final':
+                finalContent = event.content;
+                addStep('final', '生成完成', '');
+                thinkingStatus.classList.add('done');
+                break;
+
+              case 'error':
+                throw new Error(event.message);
+            }
+          }
+        }
+
+        if (!finalContent) {
+          throw new Error('Agent 未返回最终结果');
+        }
+
+        let content = finalContent.trim();
+        if (content.startsWith('```')) {
+          content = content.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+        }
+
+        const parsed = JSON.parse(content);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          throw new Error('AI 返回格式异常');
+        }
+
+        renderResults(parsed);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        let title = 'Agent 执行失败';
+        let msg = e.message || '未知错误';
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('fetch')) {
+          // 网络错误 → fallback to Demo
+          hideThinking();
+          renderResults(generateDemoData());
+          setLoading(false);
+          showToast('无法连接 AI 服务，当前为 Demo 模式');
+          return;
+        } else if (msg.includes('401') || msg.includes('auth')) {
+          title = '认证失败';
+          msg = 'API Key 无效，请检查环境变量 DEEPSEEK_API_KEY。';
+        } else if (msg.includes('429')) {
+          title = '请求超限';
+          msg = 'API 调用频率超限，请稍后重试。';
+        }
+        addStep('error', title, escapeHtml(msg));
+        showError(title, msg);
+      }
+    }
+
+    /* ====== Render Results ====== */
+    function renderResults(items) {
+      resultsSection.classList.remove('empty');
+      hideError();
+
+      const displayItems = (items || []).slice(0, 3);
+
+      let html = '';
+
+      // Header
+      html += '<div class="results-header">';
+      html += '<h2>你的项目路线图</h2>';
+      html += `<span class="count">${displayItems.length} STATIONS</span>`;
+      html += '</div>';
+
+      // Metro container
+      html += '<div class="metro-container" id="metro-container">';
+
+      // Origin
+      html += '<div class="origin-station">';
+      html += '<div class="station-dot"></div>';
+      html += '<div class="station-label"><strong>START</strong> &middot; 应届生 / 零经验</div>';
+      html += '</div>';
+
+      // Cards
+      displayItems.forEach((item, i) => {
+        const colorIdx = i % LINE_COLORS.length;
+        const color = LINE_COLORS[colorIdx];
+        const lineName = LINE_NAMES[colorIdx];
+        const bgColor = LINE_BG[colorIdx];
+        const delay = 0.3 + i * 0.35;
+
+        html += `<div class="station-card" style="--line-color:${color}; --line-bg:${bgColor};">`;
+        html += `<div class="station-dot" style="transition-delay:${delay}s;"></div>`;
+        html += `<div class="card-inner" style="animation-delay:${delay + 0.1}s;">`;
+
+        // Header
+        html += '<div class="card-header">';
+        html += `<span class="line-badge">${lineName}</span>`;
+        html += `<h3>${escapeHtml(item.skill)}</h3>`;
+        html += '</div>';
+
+        // Body
+        html += '<div class="card-body">';
+
+        // JD quote
+        html += '<div class="card-field">';
+        html += '<div class="field-label">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>';
+        html += 'JD 原文依据';
+        html += '</div>';
+        html += `<div class="jd-quote">&ldquo;${escapeHtml(item.jd_quote)}&rdquo;</div>`;
+        html += '</div>';
+
+        // Project title
+        html += '<div class="card-field">';
+        html += '<div class="field-label">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+        html += '项目名称';
+        html += '</div>';
+        html += `<div class="project-title">${escapeHtml(item.project_title)}</div>`;
+        html += '</div>';
+
+        // Project brief
+        html += '<div class="card-field">';
+        html += '<div class="field-label">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+        html += '具体做法';
+        html += '</div>';
+        html += `<div class="project-brief">${escapeHtml(item.project_brief)}</div>`;
+        html += '</div>';
+
+        // Why it proves
+        html += '<div class="card-field">';
+        html += '<div class="field-label">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>';
+        html += '为什么能证明';
+        html += '</div>';
+        html += `<div class="why-it-proves">${escapeHtml(item.why_it_proves)}</div>`;
+        html += '</div>';
+
+        // References (Agent search results)
+        if (item.references && item.references.length > 0) {
+          html += '<div class="card-field">';
+          html += '<div class="field-label">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+          html += 'Agent 搜索到的参考资源';
+          html += '</div>';
+          html += '<div style="display:flex;flex-direction:column;gap:6px;">';
+          item.references.forEach(ref => {
+            const typeLabel = ref.type === 'github' ? 'GitHub' : ref.type === 'dataset' ? 'Dataset' : 'Link';
+            html += `<a href="${escapeHtml(ref.url)}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F8F9F6;border:1px solid #EFF1EC;border-radius:8px;text-decoration:none;transition:var(--transition);">`;
+            html += `<span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--line-color);background:var(--line-bg);padding:2px 6px;border-radius:4px;flex-shrink:0;">${typeLabel}</span>`;
+            html += `<span style="font-size:13px;color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(ref.name)}</span>`;
+            html += '</a>';
+          });
+          html += '</div>';
+          html += '</div>';
+        }
+
+        // Footer
+        html += '<div class="card-footer">';
+        html += `<span class="time-badge">`;
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+        html += `预估 ${escapeHtml(item.estimated_time)}`;
+        html += '</span>';
+        html += `<button class="btn-copy" onclick="copyCard(${i})">`;
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        html += '复制';
+        html += '</button>';
+        html += '</div>';
+
+        html += '</div>'; // card-body
+        html += '</div>'; // card-inner
+        html += '</div>'; // station-card
+      });
+
+      // Destination
+      html += '<div class="dest-station">';
+      html += `<div class="station-dot" style="transition-delay:${0.3 + displayItems.length * 0.35 + 0.2}s;"></div>`;
+      html += `<div class="station-label" style="transition-delay:${0.3 + displayItems.length * 0.35 + 0.3}s;">END &middot; 作品集就绪</div>`;
+      html += '</div>';
+
+      html += '</div>'; // metro-container
+
+      resultsContent.innerHTML = html;
+
+      // Trigger animation on next frame
+      requestAnimationFrame(() => {
+        const container = $('metro-container');
+        if (container) container.classList.add('animate');
+      });
+
+      // Scroll to results
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+
+    /* ====== Copy card ====== */
+    function copyCard(index) {
+      const cards = document.querySelectorAll('.station-card');
+      if (!cards[index]) return;
+      const card = cards[index];
+      const getText = sel => {
+        const el = card.querySelector(sel);
+        return el ? el.textContent.trim() : '';
+      };
+      const text = [
+        `【${card.querySelector('.line-badge').textContent}】${card.querySelector('h3').textContent}`,
+        ``,
+        `JD原文：${getText('.jd-quote')}`,
+        ``,
+        `项目：${getText('.project-title')}`,
+        ``,
+        `做法：${getText('.project-brief')}`,
+        ``,
+        `映射逻辑：${getText('.why-it-proves')}`,
+        ``,
+        `预估耗时：${getText('.time-badge')}`,
+      ].join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = card.querySelector('.btn-copy');
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>已复制';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制';
+        }, 2000);
+      }).catch(() => showToast('复制失败'));
+    }
+
+    /* ====== Escape HTML ====== */
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /* ====== Demo Data ====== */
+    function loadDemo() {
+      inputResp.value = `1. 负责AI产品的需求分析和产品规划，输出PRD文档
+2. 与算法团队协作，推动模型迭代和效果优化
+3. 设计产品交互方案，跟踪用户反馈并持续优化
+4. 跟踪行业动态，输出竞品分析报告
+5. 跨部门协调资源，推动产品落地`;
+      inputReq.value = `1. 本科及以上学历，计算机或相关专业优先
+2. 熟悉大语言模型基本原理，有AI产品实操经验优先
+3. 具备数据分析能力，能从数据中提炼产品洞察
+4. 熟练使用SQL、Python进行数据处理
+5. 有较强的逻辑思维和结构化表达能力
+6. 对AI行业有热情，关注前沿动态`;
+      showToast('示例 JD 已加载，点击「生成路线图」查看效果');
+    }
+
+    async function showDemoDirect() {
+      loadDemo();
+      hideError();
+      setLoading(true);
+      hideThinking();
+      resultsSection.classList.add('empty');
+      await new Promise(r => setTimeout(r, 600));
+      try {
+        renderResults(generateDemoData());
+        showToast('Demo 模式展示中');
+      } catch (e) {
+        showError('生成失败', e.message);
+      }
+      setLoading(false);
+    }
+
+    function generateDemoData() {
+      return [
+        {
+          skill: "大模型原理理解与产品实操",
+          jd_quote: "熟悉大语言模型基本原理，有AI产品实操经验优先",
+          project_title: "从零搭建一个基于 API 的对话产品并做 Prompt 优化实验",
+          project_brief: "用 OpenAI API 或国内大模型 API 做一个垂直场景对话产品（如「简历优化助手」）。核心产出：1）一个可运行的对话界面（用 Streamlit 或 Gradio 快速搭建）；2）一份 Prompt 迭代记录文档，记录至少 5 轮优化过程、每轮的输入输出对比和效果评估指标（如准确率、相关性打分）。",
+          why_it_proves: "你不仅说「了解大模型」，而是展示了从调 API 到做产品到优化 Prompt 的完整链路，比课程证书有说服力得多。",
+          estimated_time: "2-3天"
+        },
+        {
+          skill: "数据分析与洞察提炼",
+          jd_quote: "具备数据分析能力，能从数据中提炼产品洞察",
+          project_title: "找一个公开数据集做一份带运营建议的分析报告",
+          project_brief: "从 Kaggle 或天池找一个真实业务数据集（如某 App 用户评论数据），用 Python 做描述性统计 + 3 个维度的深度分析（如用户情感倾向分布、高频投诉主题、评分与功能关联）。产出一份 PDF 分析报告，包含数据可视化图表和 3 条可执行运营建议。",
+          why_it_proves: "JD 要的是「从数据中提炼洞察」，你的报告直接展示了从原始数据到业务建议的完整思考过程，不是跑个 mean() 就完事。",
+          estimated_time: "2天"
+        },
+        {
+          skill: "SQL 与 Python 数据处理",
+          jd_quote: "熟练使用SQL、Python进行数据处理",
+          project_title: "用 SQL + Python 搭一个完整的数据处理 Pipeline",
+          project_brief: "找一个公开的电商或社交数据集，搭建一个数据处理 pipeline：用 SQL 做数据清洗和多维聚合查询（至少写 5 条有业务含义的 SQL），用 Python 做进一步分析和可视化。产出一个 GitHub 仓库，包含 SQL 脚本、Jupyter Notebook 和 README 说明。",
+          why_it_proves: "不是简历上写「熟练 SQL」，而是有一个公开仓库展示你真实写了什么查询、做了什么处理，面试官可以直接点开看。",
+          estimated_time: "1-2天"
+        }
+      ];
+    }
+
+    /* ====== Keyboard shortcut ====== */
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleGenerate();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen — 简历 X 光机</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <style>
+    /* ====== Design Tokens (与 Transit / VoiceMap 统一) ====== */
+    :root {
+      --bg: #EEF0EC;
+      --bg-card: #FFFFFF;
+      --text-primary: #1A2330;
+      --text-secondary: #6B7585;
+      --text-tertiary: #A0A8B4;
+      --line-gray: #C7CBD1;
+      --border: #E2E5E1;
+      --border-hover: #C7CBD1;
+
+      --l1: #E15A42;
+      --l2: #1D8F80;
+      --l3: #E5A23A;
+      --l4: #3E5FCC;
+      --l5: #8A5FBF;
+
+      /* 信号灯色 */
+      --signal-green: #2F9E44;
+      --signal-green-bg: rgba(47,158,68,0.08);
+      --signal-yellow: #E5A23A;
+      --signal-yellow-bg: rgba(229,162,58,0.08);
+      --signal-red: #E03131;
+      --signal-red-bg: rgba(224,49,49,0.08);
+
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-xs: 0 1px 2px rgba(26,35,48,0.04);
+      --shadow-sm: 0 1px 3px rgba(26,35,48,0.05), 0 1px 2px rgba(26,35,48,0.03);
+      --shadow: 0 4px 6px -1px rgba(26,35,48,0.05), 0 2px 4px -1px rgba(26,35,48,0.03), 0 0 0 1px rgba(26,35,48,0.02);
+      --shadow-lg: 0 20px 40px -8px rgba(26,35,48,0.12), 0 8px 16px -4px rgba(26,35,48,0.06), 0 0 0 1px rgba(26,35,48,0.03);
+
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    /* ====== Reset ====== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 900px 500px at 50% -80px, rgba(62,95,204,0.05), transparent),
+        radial-gradient(ellipse 700px 400px at 80% 20%, rgba(138,95,191,0.03), transparent),
+        radial-gradient(circle at 1px 1px, rgba(26,35,48,0.022) 1px, transparent 0);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+      background-attachment: fixed;
+    }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    textarea { font-family: inherit; }
+    ::selection { background: rgba(225,90,66,0.12); }
+
+    /* ====== Layout ====== */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+    /* ====== Hero ====== */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      position: relative;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--l4);
+      background: rgba(62,95,204,0.06);
+      border: 1px solid rgba(62,95,204,0.15);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--l4);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #1A2330 0%, #3E5FCC 55%, #8A5FBF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 0;
+    }
+
+    /* Hero decorative scanner line */
+    .scanner-deco {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      margin-top: 40px;
+      height: 32px;
+    }
+    .scanner-deco .seg {
+      height: 3px;
+      border-radius: 2px;
+      position: relative;
+    }
+    .scanner-deco .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px currentColor;
+    }
+    .scanner-deco .shimmer {
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60px; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    /* ====== Input Section ====== */
+    .input-section {
+      padding: 0 0 32px;
+    }
+    .input-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .input-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--l1), var(--l3), var(--l2), var(--l4), var(--l5));
+    }
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .input-col {
+      padding: 28px 28px 20px;
+    }
+    .input-col + .input-col {
+      border-left: 1px solid var(--border);
+    }
+    .input-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-label .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .input-col:first-child .num { background: var(--l4); }
+    .input-col:last-child .num { background: var(--l1); }
+    .input-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .input-field {
+      width: 100%;
+      min-height: 200px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      resize: vertical;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      background: #FAFBF9;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--l4);
+      box-shadow: 0 0 0 3px rgba(62,95,204,0.08);
+      background: #fff;
+    }
+    .input-field::placeholder {
+      color: var(--text-tertiary);
+      line-height: 1.7;
+    }
+
+    /* ====== File Upload Zone ====== */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: #FAFBF9;
+      position: relative;
+    }
+    .upload-zone:hover {
+      border-color: var(--l4);
+      background: rgba(62,95,204,0.02);
+    }
+    .upload-zone.drag-over {
+      border-color: var(--l4);
+      background: rgba(62,95,204,0.06);
+      transform: scale(1.01);
+    }
+    .upload-zone.uploading {
+      border-color: var(--l3);
+      pointer-events: none;
+    }
+    .upload-zone svg.upload-icon {
+      width: 36px; height: 36px;
+      color: var(--text-tertiary);
+      margin-bottom: 14px;
+      transition: var(--transition);
+    }
+    .upload-zone:hover svg.upload-icon { color: var(--l4); }
+    .upload-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+    .upload-spinner {
+      width: 24px; height: 24px;
+      border: 2.5px solid rgba(229,162,58,0.2);
+      border-top-color: var(--l3);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    .upload-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: rgba(47,158,68,0.06);
+      border: 1px solid rgba(47,158,68,0.15);
+      border-radius: var(--radius-sm);
+      margin-top: 12px;
+      animation: slideDown 0.3s ease;
+    }
+    .upload-info svg {
+      width: 18px; height: 18px;
+      color: var(--signal-green);
+      flex-shrink: 0;
+    }
+    .upload-filename {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .upload-meta {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+    .upload-clear {
+      font-size: 12px;
+      color: var(--signal-red);
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(224,49,49,0.2);
+      background: rgba(224,49,49,0.04);
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .upload-clear:hover {
+      background: rgba(224,49,49,0.1);
+      border-color: rgba(224,49,49,0.4);
+    }
+
+    /* JD split fields */
+    .jd-split { display: flex; flex-direction: column; gap: 16px; }
+    .jd-split .input-field { min-height: 130px; }
+    .jd-split-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+
+    .input-actions {
+      padding: 0 28px 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 100px;
+      background: var(--text-primary);
+      color: #fff;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26,35,48,0.18);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-primary .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-secondary {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+    .btn-demo {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      color: var(--l2);
+      border: 1px solid rgba(29,143,128,0.2);
+      background: rgba(29,143,128,0.04);
+      transition: all var(--transition);
+    }
+    .btn-demo:hover {
+      background: rgba(29,143,128,0.08);
+      border-color: rgba(29,143,128,0.35);
+    }
+
+    .input-hint {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* ====== Error ====== */
+    .error-banner {
+      display: none;
+      background: var(--signal-red-bg);
+      border: 1px solid rgba(224,49,49,0.2);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .error-banner.show { display: block; animation: slideDown 0.3s ease; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .error-banner h4 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--signal-red);
+      margin-bottom: 4px;
+    }
+    .error-banner p { font-size: 13px; color: var(--text-secondary); }
+    .error-banner .btn-retry {
+      margin-top: 10px;
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: var(--signal-red);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* ====== Score Overview ====== */
+    .results-section {
+      display: none;
+      padding: 0 0 80px;
+    }
+    .results-section.show {
+      display: block;
+      animation: fadeInUp 0.5s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .score-overview {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 40px 32px;
+      margin-bottom: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-overview::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--l1), var(--l3), var(--l2), var(--l4), var(--l5));
+    }
+
+    .score-ring {
+      position: relative;
+      width: 160px; height: 160px;
+      margin: 0 auto 24px;
+    }
+    .score-ring svg {
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+    }
+    .score-ring .ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+    .score-ring .ring-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .score-ring .score-num {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .score-ring .score-num .num {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-ring .score-num .unit {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    .score-label {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .score-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .score-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ====== Station Track ====== */
+    .track-section {
+      margin-top: 40px;
+    }
+    .track-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .track-header h2 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .track-header .count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .track {
+      position: relative;
+      padding-left: 40px;
+    }
+    .track::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 20px;
+      bottom: 20px;
+      width: 3px;
+      background: var(--line-gray);
+      border-radius: 2px;
+      transform-origin: top;
+      animation: drawLine 0.8s ease forwards;
+    }
+    @keyframes drawLine {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    .track-start, .track-end {
+      position: relative;
+      padding: 8px 0 8px 0;
+      margin-bottom: 8px;
+    }
+    .track-start .station-dot, .track-end .station-dot {
+      position: absolute;
+      left: -40px;
+      top: 12px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 3px var(--text-primary);
+      background: var(--bg-card);
+      z-index: 2;
+    }
+    .track-end .station-dot {
+      box-shadow: 0 0 0 3px var(--l2);
+      background: var(--l2);
+    }
+    .station-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .station-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* ====== Check Card (Station) ====== */
+    .check-card {
+      position: relative;
+      margin-bottom: 20px;
+      animation: cardSlideIn 0.5s ease backwards;
+    }
+    @keyframes cardSlideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .check-card .station-dot {
+      position: absolute;
+      left: -40px;
+      top: 24px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 3px currentColor;
+      background: var(--bg-card);
+      z-index: 2;
+      animation: dotPop 0.4s var(--transition-bounce) backwards;
+    }
+    @keyframes dotPop {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .check-card .signal {
+      position: absolute;
+      left: -36px;
+      top: 20px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      z-index: 3;
+      animation: dotPop 0.4s var(--transition-bounce) 0.2s backwards;
+    }
+
+    .check-card-inner {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .check-card-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .check-card-inner:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Signal colors */
+    .check-card.match .station-dot { color: var(--signal-green); }
+    .check-card.match .signal { background: var(--signal-green); box-shadow: 0 0 12px var(--signal-green); }
+    .check-card.match .check-card-inner::before { background: var(--signal-green); }
+
+    .check-card.partial .station-dot { color: var(--signal-yellow); }
+    .check-card.partial .signal { background: var(--signal-yellow); box-shadow: 0 0 12px var(--signal-yellow); }
+    .check-card.partial .check-card-inner::before { background: var(--signal-yellow); }
+
+    .check-card.missing .station-dot { color: var(--signal-red); }
+    .check-card.missing .signal { background: var(--signal-red); box-shadow: 0 0 12px var(--signal-red); animation: dotPop 0.4s var(--transition-bounce) 0.2s backwards, redPulse 2s 0.6s infinite; }
+    .check-card.missing .check-card-inner::before { background: var(--signal-red); }
+    @keyframes redPulse {
+      0%, 100% { box-shadow: 0 0 8px var(--signal-red); }
+      50% { box-shadow: 0 0 20px var(--signal-red), 0 0 40px rgba(224,49,49,0.3); }
+    }
+
+    .check-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .check-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .check-badge {
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+    }
+    .check-card.match .check-badge {
+      background: var(--signal-green-bg);
+      color: var(--signal-green);
+    }
+    .check-card.partial .check-badge {
+      background: var(--signal-yellow-bg);
+      color: var(--signal-yellow);
+    }
+    .check-card.missing .check-badge {
+      background: var(--signal-red-bg);
+      color: var(--signal-red);
+    }
+
+    .check-field {
+      margin-bottom: 14px;
+    }
+    .field-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .field-label svg { width: 12px; height: 12px; }
+
+    .jd-quote {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      background: #F8F9F7;
+      border-radius: 8px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--border);
+    }
+    .match-evidence {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .match-evidence .highlight {
+      background: rgba(47,158,68,0.06);
+      border-radius: 3px;
+      padding: 1px 4px;
+    }
+    .suggestion {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: rgba(62,95,204,0.03);
+      border-radius: 8px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--l4);
+    }
+    .suggestion strong { color: var(--l4); }
+
+    .check-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .check-weight {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .copy-btn {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+    }
+    .copy-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+    .copy-btn.copied {
+      color: var(--signal-green);
+      border-color: var(--signal-green);
+    }
+
+    /* ====== Overall Suggestions ====== */
+    .overall-section {
+      margin-top: 40px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .overall-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--l4), var(--l5));
+    }
+    .overall-section h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .overall-list {
+      list-style: none;
+      counter-reset: item;
+    }
+    .overall-list li {
+      counter-increment: item;
+      padding: 12px 0 12px 36px;
+      position: relative;
+      font-size: 14px;
+      line-height: 1.7;
+      border-bottom: 1px solid var(--border);
+    }
+    .overall-list li:last-child { border-bottom: none; }
+    .overall-list li::before {
+      content: counter(item, decimal-leading-zero);
+      position: absolute;
+      left: 0; top: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--l4);
+    }
+
+    /* ====== Story Link ====== */
+    .story-link {
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .story-link p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .story-link a {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--l4);
+      text-decoration: none;
+      padding: 8px 20px;
+      border: 1px solid rgba(62,95,204,0.2);
+      border-radius: 100px;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .story-link a:hover {
+      background: rgba(62,95,204,0.06);
+      border-color: rgba(62,95,204,0.35);
+    }
+
+    /* ====== Toast ====== */
+    .toast {
+      position: fixed;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text-primary);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition);
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ====== Responsive ====== */
+    @media (max-width: 720px) {
+      .hero { padding: 48px 16px 32px; }
+      .hero h1 { font-size: 38px; }
+      .hero .subtitle { font-size: 15px; }
+      .input-grid { grid-template-columns: 1fr; }
+      .input-col + .input-col { border-left: none; border-top: 1px solid var(--border); }
+      .input-actions { padding: 0 20px 20px; }
+      .input-hint { display: none; }
+      .container { padding: 0 16px; }
+      .check-card-inner { padding: 20px; }
+      .score-stats { gap: 24px; }
+    }
+
+    /* ====== Project Nav ====== */
+    .project-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 4px;
+      height: 44px;
+      align-items: center;
+    }
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-display);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 100px;
+      transition: var(--transition);
+    }
+    .nav-item:hover {
+      background: rgba(26,35,48,0.04);
+      color: var(--text-primary);
+    }
+    .nav-item.active {
+      background: var(--text-primary);
+      color: #fff;
+    }
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== Project Nav ====== -->
+  <nav class="project-nav">
+    <div class="nav-inner">
+      <a href="/voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
+      <a href="/index.html" class="nav-item"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
+      <a href="/screen.html" class="nav-item active"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
+    </div>
+  </nav>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero">
+    <div class="hero-tag">UPLOAD RESUME &middot; PASTE JD &middot; GET X-RAY</div>
+    <h1>Screen</h1>
+    <p class="subtitle">把简历和 JD 放进 X 光机，看清每一处匹配、模糊和缺口</p>
+    <div class="scanner-deco">
+      <div class="seg" style="width:40px;background:var(--l4);color:var(--l4)"><div class="shimmer"></div></div>
+      <div class="dot" style="color:var(--l4)"></div>
+      <div class="seg" style="width:50px;background:var(--l3);color:var(--l3)"></div>
+      <div class="dot" style="color:var(--l3)"></div>
+      <div class="seg" style="width:40px;background:var(--l2);color:var(--l2)"></div>
+      <div class="dot" style="color:var(--l2)"></div>
+      <div class="seg" style="width:35px;background:var(--l5);color:var(--l5)"></div>
+    </div>
+  </section>
+
+  <!-- ====== Input ====== -->
+  <section class="container input-section">
+    <div class="input-card">
+      <div class="input-grid">
+        <div class="input-col">
+          <div class="input-label"><span class="num">1</span> UPLOAD</div>
+          <div class="input-title">你的简历</div>
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="resume-file" accept=".pdf,.docx" style="display:none" />
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <div class="upload-text">点击或拖拽上传简历</div>
+            <div class="upload-hint">支持 PDF / DOCX 格式</div>
+          </div>
+          <div class="upload-info" id="upload-info" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="upload-filename" id="upload-filename">&mdash;</span>
+            <span class="upload-meta" id="upload-meta">&mdash;</span>
+            <button class="upload-clear" onclick="clearResume()">删除</button>
+          </div>
+        </div>
+        <div class="input-col">
+          <div class="input-label"><span class="num">2</span> TARGET</div>
+          <div class="input-title">目标岗位 JD</div>
+          <div class="jd-split">
+            <div>
+              <div class="jd-split-label">岗位职责</div>
+              <textarea class="input-field" id="input-jd-resp" placeholder="粘贴岗位「岗位职责 / 岗位描述」部分&#10;&#10;例：&#10;1. 负责AI产品的需求分析和产品规划&#10;2. 与算法团队协作，推动模型迭代&#10;3. 设计产品交互方案，跟踪用户反馈"></textarea>
+            </div>
+            <div>
+              <div class="jd-split-label">任职要求</div>
+              <textarea class="input-field" id="input-jd-req" placeholder="粘贴岗位「任职要求 / 任职资格」部分&#10;&#10;例：&#10;1. 本科及以上学历，计算机相关专业优先&#10;2. 熟悉大语言模型基本原理&#10;3. 熟练使用SQL、Python进行数据分析"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-actions">
+        <button class="btn-primary" id="btn-generate" onclick="handleGenerate()">
+          <span id="btn-text">开始诊断</span>
+        </button>
+        <button class="btn-demo" onclick="showDemoDirect()">Demo 演示</button>
+        <button class="btn-secondary" onclick="loadDemo()">加载示例</button>
+        <span class="input-hint">Ctrl / Cmd + Enter 快捷诊断</span>
+      </div>
+    </div>
+
+    <div class="error-banner" id="error-banner">
+      <h4 id="error-title">诊断失败</h4>
+      <p id="error-msg"></p>
+      <button class="btn-retry" onclick="handleGenerate()">重试</button>
+      <button class="btn-demo" onclick="showDemoDirect()" style="margin-left:8px;border-color:rgba(29,143,128,0.2);background:rgba(29,143,128,0.04);color:var(--l2);font-size:13px;padding:6px 16px;border-radius:100px;border:1px solid rgba(29,143,128,0.2);cursor:pointer;font-family:inherit;">查看 Demo</button>
+    </div>
+  </section>
+
+  <!-- ====== Results ====== -->
+  <section class="container results-section" id="results-section">
+    <!-- Score Overview -->
+    <div class="score-overview" id="score-overview">
+      <div class="score-ring">
+        <svg viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="68"/>
+          <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="68"
+            stroke-dasharray="427.26" stroke-dashoffset="427.26"/>
+        </svg>
+        <div class="score-num">
+          <div class="num" id="score-num">0</div>
+          <div class="unit">/ 100</div>
+        </div>
+      </div>
+      <div class="score-label" id="score-label">—</div>
+      <div class="score-desc" id="score-desc">—</div>
+      <div class="score-stats">
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--signal-green)" id="stat-match">0</div>
+          <div class="stat-label">MATCH</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--signal-yellow)" id="stat-partial">0</div>
+          <div class="stat-label">PARTIAL</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" style="color:var(--signal-red)" id="stat-missing">0</div>
+          <div class="stat-label">MISSING</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Check Track -->
+    <div class="track-section">
+      <div class="track-header">
+        <h2>逐项扫描</h2>
+        <span class="count" id="track-count">— 个检查站</span>
+      </div>
+      <div class="track" id="track"></div>
+    </div>
+
+    <!-- Overall Suggestions -->
+    <div class="overall-section" id="overall-section" style="display:none">
+      <h3>整体改进建议</h3>
+      <ol class="overall-list" id="overall-list"></ol>
+    </div>
+
+    <!-- Story Link -->
+    <div class="story-link">
+      <p>发现缺口了？用 Transit 生成补位项目 →</p>
+      <a href="/index.html">前往 Transit · JD 路线图生成器</a>
+    </div>
+  </section>
+
+  <!-- ====== Toast ====== -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ====== Elements ======
+    const uploadZone = document.getElementById('upload-zone');
+    const resumeFileInput = document.getElementById('resume-file');
+    const uploadInfo = document.getElementById('upload-info');
+    const uploadFilename = document.getElementById('upload-filename');
+    const uploadMeta = document.getElementById('upload-meta');
+    const inputJdResp = document.getElementById('input-jd-resp');
+    const inputJdReq = document.getElementById('input-jd-req');
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnText = document.getElementById('btn-text');
+    const resultsSection = document.getElementById('results-section');
+    const errorBanner = document.getElementById('error-banner');
+    const errorTitle = document.getElementById('error-title');
+    const errorMsg = document.getElementById('error-msg');
+    const toast = document.getElementById('toast');
+
+    // 简历文本存储
+    let resumeText = '';
+
+    // ====== System Prompt ======
+    const SYSTEM_PROMPT = `你是一名资深招聘官和简历顾问。用户会给你一份简历和一段招聘JD（包含「岗位职责」和「任职要求」两部分），你需要像X光机一样逐项扫描，做能力匹配诊断。
+
+规则：
+1. 从JD的"任职要求"中提取5-8个核心能力点（不要提取软性套话如"良好的沟通能力"）。同时参考"岗位职责"部分判断该能力的实际应用场景。
+2. 对每个能力点，在简历中寻找对应证据，判定为三种状态之一：
+   - "match"：简历中有明确、具体的经历能证明该能力
+   - "partial"：简历中有间接相关的内容，但不够具体或有差距
+   - "missing"：简历中完全没有体现该能力
+3. 对每个能力点给出：
+   - jd_quote：JD原文中最能体现这个能力点的一句话（30字以内）
+   - status：match / partial / missing
+   - evidence：简历中找到的具体证据（如果是missing则写"未在简历中找到相关经历"）
+   - suggestion：具体改进建议，告诉用户该补什么经历或怎么改写现有经历来命中这条要求
+   - weight：该能力点在JD中的权重占比（high/medium/low）
+4. 计算一个overall_score（0-100整数），权重：match=满分，partial=半分，missing=0分，再按weight加权。
+5. 给出3-5条整体改进建议（overall_suggestions数组），每条一句话，直接、具体、可执行。
+
+只输出JSON对象，不要任何前言、解释或markdown标记。格式：
+{"overall_score":数字,"summary":"一句话总结","items":[{"skill":"能力名称","jd_quote":"JD原文","status":"match/partial/missing","evidence":"简历证据","suggestion":"改进建议","weight":"high/medium/low"}],"overall_suggestions":["建议1","建议2","建议3"]}`;
+
+    // ====== Utils ======
+    function $(id) { return document.getElementById(id); }
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    function setLoading(loading) {
+      btnGenerate.disabled = loading;
+      if (loading) {
+        btnText.outerHTML = '<span class="spinner" id="btn-text"></span>';
+      } else {
+        const spinner = $('btn-text');
+        if (spinner && spinner.classList.contains('spinner')) {
+          spinner.outerHTML = '<span id="btn-text">开始诊断</span>';
+        }
+      }
+    }
+    function showError(title, msg) {
+      errorTitle.textContent = title;
+      errorMsg.textContent = msg;
+      errorBanner.classList.add('show');
+    }
+    function hideError() {
+      errorBanner.classList.remove('show');
+    }
+
+    // ====== Resume Upload (Browser-side parsing) ======
+    // 浏览器端解析 PDF
+    async function parsePDF(arrayBuffer) {
+      if (!window.pdfjsLib) {
+        throw new Error('PDF 解析库加载失败，请刷新页面重试');
+      }
+      // 设置 worker
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+      } catch(e) {}
+
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const pageText = content.items.map(item => item.str).join(' ');
+        fullText += pageText + '\n';
+      }
+      return fullText.trim();
+    }
+
+    // 浏览器端解析 DOCX
+    async function parseDOCX(arrayBuffer) {
+      if (!window.mammoth) {
+        throw new Error('DOCX 解析库加载失败，请刷新页面重试');
+      }
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value.trim();
+    }
+
+    async function handleFileSelect(file) {
+      if (!file) return;
+      const name = file.name.toLowerCase();
+      if (!name.endsWith('.pdf') && !name.endsWith('.docx')) {
+        showToast('仅支持 PDF 或 DOCX 格式');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('文件过大，请上传 10MB 以下的文件');
+        return;
+      }
+
+      // 显示上传中状态
+      uploadZone.classList.add('uploading');
+      uploadZone.innerHTML = '<div class="upload-spinner"></div><div class="upload-text">正在解析简历...</div>';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        let text = '';
+
+        if (name.endsWith('.pdf')) {
+          text = await parsePDF(arrayBuffer);
+        } else if (name.endsWith('.docx')) {
+          text = await parseDOCX(arrayBuffer);
+        }
+
+        if (!text || text.length < 10) {
+          throw new Error('文件内容提取失败，可能是扫描件或空文件');
+        }
+
+        resumeText = text;
+        uploadFilename.textContent = file.name;
+        uploadMeta.textContent = text.length + ' 字';
+        uploadInfo.style.display = 'flex';
+
+        // 恢复上传区域
+        uploadZone.classList.remove('uploading');
+        uploadZone.innerHTML = `
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <div class="upload-text">点击或拖拽重新上传</div>
+          <div class="upload-hint">支持 PDF / DOCX 格式</div>
+        `;
+        showToast('简历解析成功（' + text.length + ' 字）');
+      } catch (err) {
+        let msg = err.message || '解析失败';
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+          msg = '网络请求失败，请检查网络连接';
+        }
+        showUploadError(msg);
+      }
+    }
+
+    function showUploadError(message) {
+      uploadZone.classList.remove('uploading');
+      uploadZone.innerHTML = `
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--signal-red)">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+        <div class="upload-text" style="color:var(--signal-red);white-space:pre-line">${escapeHtml(message)}</div>
+        <div class="upload-hint">点击重新上传</div>
+      `;
+      resumeText = '';
+      uploadInfo.style.display = 'none';
+    }
+
+    function clearResume() {
+      resumeText = '';
+      resumeFileInput.value = '';
+      uploadInfo.style.display = 'none';
+      uploadZone.innerHTML = `
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div class="upload-text">点击或拖拽上传简历</div>
+        <div class="upload-hint">支持 PDF / DOCX 格式</div>
+      `;
+    }
+
+    // 文件选择
+    uploadZone.addEventListener('click', () => resumeFileInput.click());
+    resumeFileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFileSelect(e.target.files[0]);
+    });
+
+    // 拖拽上传
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('drag-over');
+    });
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('drag-over');
+    });
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]);
+    });
+
+    // ====== Load Demo ======
+    function loadDemo() {
+      resumeText = `张小明
+教育背景：XX大学 计算机科学与技术 本科 2021-2025
+GPA：3.4/4.0
+
+实习经历：
+某互联网公司 产品实习生 2024.07-2024.09
+- 协助产品经理完成竞品分析报告3份
+- 参与用户调研，整理200+用户反馈
+- 使用Axure绘制原型，配合开发上线一个小功能
+
+项目经历：
+校园二手交易平台（课程项目）
+- 使用Python Flask搭建后端
+- MySQL数据库设计，实现商品发布、搜索、交易功能
+- 前端使用HTML/CSS/JS
+
+技能：
+- Python, SQL, Java
+- Axure, Figma
+- 英语CET-6`;
+      uploadFilename.textContent = 'demo-resume.txt';
+      uploadMeta.textContent = resumeText.length + ' 字';
+      uploadInfo.style.display = 'flex';
+      uploadZone.innerHTML = `
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div class="upload-text">点击或拖拽重新上传</div>
+        <div class="upload-hint">支持 PDF / DOCX 格式</div>
+      `;
+      inputJdResp.value = `1. 负责AI产品的需求分析、原型设计和项目管理
+2. 跟踪行业动态，输出竞品分析报告
+3. 协同研发团队推进产品迭代`;
+      inputJdReq.value = `1. 本科及以上学历，计算机或相关专业优先
+2. 熟悉大语言模型基本原理，有AI产品实操经验优先
+3. 熟练使用SQL、Python进行数据分析
+4. 具备数据分析能力，能从数据中提炼产品洞察
+5. 有产品实习经验，熟悉产品从0到1的全流程
+6. 熟悉主流原型工具`;
+      showToast('示例已加载，点击「开始诊断」');
+    }
+
+    // ====== Demo Direct ======
+    async function showDemoDirect() {
+      loadDemo();
+      hideError();
+      setLoading(true);
+      resultsSection.classList.remove('show');
+      await new Promise(r => setTimeout(r, 600));
+      try {
+        renderResults(generateDemoData());
+        showToast('Demo 演示中');
+      } catch (e) {
+        showError('生成失败', e.message);
+      }
+      setLoading(false);
+    }
+
+    function generateDemoData() {
+      return {
+        overall_score: 52,
+        summary: "简历有基础技术栈和少量产品实习，但缺少AI产品实操、数据分析深度和从0到1的产品经验，核心缺口明显。",
+        items: [
+          {
+            skill: "大模型原理理解与AI产品实操",
+            jd_quote: "熟悉大语言模型基本原理，有AI产品实操经验优先",
+            status: "missing",
+            evidence: "简历中未找到任何与大语言模型、AI产品相关的经历。",
+            suggestion: "用 OpenAI API 或国内大模型 API 做一个垂直场景的 AI 对话产品（如简历优化助手），展示从调 API 到 Prompt 优化到产品上线的完整链路。可以参考 Transit 项目的方法论。",
+            weight: "high"
+          },
+          {
+            skill: "SQL与Python数据分析",
+            jd_quote: "熟练使用SQL、Python进行数据分析",
+            status: "partial",
+            evidence: "简历提到 Python(Flask) 和 SQL(MySQL)，但是用在后端开发而非数据分析。技能列表里有 Python 和 SQL。",
+            suggestion: "补一个数据分析项目：用 SQL 做多维度查询 + Python 做可视化分析。找一个公开数据集（如电商评论数据），产出一份带运营建议的分析报告。简历中强调“用于数据分析”而非“用于后端开发”。",
+            weight: "high"
+          },
+          {
+            skill: "数据驱动的产品洞察",
+            jd_quote: "具备数据分析能力，能从数据中提炼产品洞察",
+            status: "missing",
+            evidence: "实习经历提到“整理200+用户反馈”，但没有展示如何从数据中提炼洞察或驱动决策。",
+            suggestion: "把实习中的“整理用户反馈”升级为：用 Python 对 200+ 反馈做主题聚类，归纳 Top 痛点，输出改进建议并推动上线。或者做一个独立的用户口碑分析项目。",
+            weight: "high"
+          },
+          {
+            skill: "产品从0到1经验",
+            jd_quote: "有产品实习经验，熟悉产品从0到1的全流程",
+            status: "partial",
+            evidence: "有产品实习经历，但描述偏执行层（画原型、整理反馈），缺少从需求到上线的完整产品故事。",
+            suggestion: "在实习经历中补充：你参与的那个小功能，从需求发现→竞品调研→方案设计→上线验证的完整过程。如果没有，做一个独立产品项目放到简历里。",
+            weight: "medium"
+          },
+          {
+            skill: "竞品分析与行业跟踪",
+            jd_quote: "跟踪行业动态，输出竞品分析报告",
+            status: "match",
+            evidence: "实习经历提到“协助产品经理完成竞品分析报告3份”。",
+            suggestion: "把“3份竞品分析报告”具体化：分析的是哪几个竞品？得出了什么关键结论？推动了什么决策？最好附上报告链接或作品集链接。",
+            weight: "medium"
+          },
+          {
+            skill: "原型工具熟练度",
+            jd_quote: "熟悉主流原型工具",
+            status: "match",
+            evidence: "技能列表有 Axure 和 Figma，实习经历提到“使用Axure绘制原型”。",
+            suggestion: "已经命中，建议在简历中补充一个原型作品链接，让面试官可以直接看到你的原型水平。",
+            weight: "low"
+          }
+        ],
+        overall_suggestions: [
+          "最大缺口是“AI产品实操”——这是JD里明确写了“优先”的加分项，补上后竞争力直接拉开档次。建议做一个基于大模型API的小产品。",
+          "SQL和Python在简历里是“会但不用于分析”，需要补一个数据分析项目，把技能定位从“开发工具”转变为“分析工具”。",
+          "实习经历的描述太执行层，缺乏“我发现了什么问题→我做了什么→结果如何”的完整叙事。重写实习经历用STAR框架。",
+          "简历缺少作品集链接，建议把项目放到GitHub或在线部署，附上可点击的链接。"
+        ]
+      };
+    }
+
+    // ====== Render ======
+    function renderResults(data) {
+      hideError();
+      resultsSection.classList.add('show');
+
+      // Score ring
+      const score = data.overall_score || 0;
+      const ringFill = $('ring-fill');
+      const circumference = 2 * Math.PI * 68; // ~427.26
+      const offset = circumference * (1 - score / 100);
+      ringFill.style.strokeDashoffset = offset;
+
+      // Color based on score
+      let ringColor, scoreLabel;
+      if (score >= 75) { ringColor = 'var(--signal-green)'; scoreLabel = '匹配度优秀'; }
+      else if (score >= 50) { ringColor = 'var(--signal-yellow)'; scoreLabel = '匹配度中等'; }
+      else { ringColor = 'var(--signal-red)'; scoreLabel = '匹配度不足'; }
+      ringFill.style.stroke = ringColor;
+
+      $('score-label').textContent = scoreLabel;
+      $('score-desc').textContent = data.summary || '';
+
+      // Animate score number
+      animateNumber($('score-num'), 0, score, 1200);
+
+      // Stats
+      let matchCount = 0, partialCount = 0, missingCount = 0;
+      data.items.forEach(it => {
+        if (it.status === 'match') matchCount++;
+        else if (it.status === 'partial') partialCount++;
+        else if (it.status === 'missing') missingCount++;
+      });
+      animateNumber($('stat-match'), 0, matchCount, 800);
+      animateNumber($('stat-partial'), 0, partialCount, 800);
+      animateNumber($('stat-missing'), 0, missingCount, 800);
+
+      // Track
+      const track = $('track');
+      const items = data.items || [];
+      $('track-count').textContent = `${items.length} 个检查站`;
+
+      let html = '';
+      // Start station
+      html += `<div class="track-start">
+        <div class="station-dot"></div>
+        <div class="station-label">SCAN START</div>
+        <div class="station-name">开始扫描 · 简历 vs JD</div>
+      </div>`;
+
+      const statusLabel = { match: 'MATCH', partial: 'PARTIAL', missing: 'MISSING' };
+      const weightLabel = { high: '高权重', medium: '中权重', low: '低权重' };
+
+      items.forEach((item, i) => {
+        const delay = 0.3 + i * 0.15;
+        html += `<div class="check-card ${item.status}" style="animation-delay:${delay}s">
+          <div class="station-dot" style="animation-delay:${delay}s"></div>
+          <div class="signal" style="animation-delay:${delay + 0.2}s"></div>
+          <div class="check-card-inner">
+            <div class="check-header">
+              <div class="check-title">${escapeHtml(item.skill)}</div>
+              <span class="check-badge">${statusLabel[item.status] || item.status}</span>
+            </div>
+            <div class="check-field">
+              <div class="field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                JD 要求
+              </div>
+              <div class="jd-quote">${escapeHtml(item.jd_quote)}</div>
+            </div>
+            <div class="check-field">
+              <div class="field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                简历证据
+              </div>
+              <div class="match-evidence">${escapeHtml(item.evidence)}</div>
+            </div>
+            <div class="check-field">
+              <div class="field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+                改进建议
+              </div>
+              <div class="suggestion">${escapeHtml(item.suggestion)}</div>
+            </div>
+            <div class="check-footer">
+              <span class="check-weight">${weightLabel[item.weight] || item.weight}</span>
+              <button class="copy-btn" onclick="copyCheck(this, ${i})">复制</button>
+            </div>
+          </div>
+        </div>`;
+      });
+
+      // End station
+      html += `<div class="track-end">
+        <div class="station-dot"></div>
+        <div class="station-label">SCAN COMPLETE</div>
+        <div class="station-name">扫描完成 · ${matchCount} 项匹配 / ${partialCount} 项部分 / ${missingCount} 项缺失</div>
+      </div>`;
+
+      track.innerHTML = html;
+
+      // Overall suggestions
+      if (data.overall_suggestions && data.overall_suggestions.length > 0) {
+        const list = $('overall-list');
+        list.innerHTML = data.overall_suggestions.map(s => `<li>${escapeHtml(s)}</li>`).join('');
+        $('overall-section').style.display = 'block';
+      }
+
+      // Scroll to results
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+
+    function animateNumber(el, from, to, duration) {
+      const start = Date.now();
+      function update() {
+        const elapsed = Date.now() - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(from + (to - from) * eased);
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      update();
+    }
+
+    function copyCheck(btn, index) {
+      const cards = document.querySelectorAll('.check-card');
+      if (!cards[index]) return;
+      const card = cards[index].querySelector('.check-card-inner');
+      const text = card.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        showToast('复制失败，请手动选择文本');
+      });
+    }
+
+    // ====== Generate ======
+    async function handleGenerate() {
+      const resume = resumeText.trim();
+      const jdResp = inputJdResp.value.trim();
+      const jdReq = inputJdReq.value.trim();
+      const jd = `岗位职责：\n${jdResp}\n\n任职要求：\n${jdReq}`;
+
+      if (!resume || (!jdResp && !jdReq)) {
+        showToast('请上传简历并填写目标 JD');
+        return;
+      }
+
+      hideError();
+      setLoading(true);
+      resultsSection.classList.remove('show');
+
+      try {
+        const userPrompt = `以下是候选人的简历：\n\n${resume}\n\n以下是目标岗位的JD：\n\n${jd}`;
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              { role: 'user', content: userPrompt }
+            ],
+            temperature: 0.3
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        let content = data.choices[0].message.content.trim();
+
+        // Clean markdown fences
+        if (content.startsWith('```')) {
+          content = content.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+        }
+
+        const parsed = JSON.parse(content);
+
+        if (!parsed.items || !Array.isArray(parsed.items) || parsed.items.length === 0) {
+          throw new Error('AI 返回格式异常，未生成有效诊断结果');
+        }
+
+        renderResults(parsed);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        let title = '诊断失败';
+        let msg = e.message || '未知错误';
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('fetch')) {
+          // 网络错误 → fallback to Demo
+          renderResults(generateDemoData());
+          showToast('无法连接 AI 服务，当前为 Demo 模式');
+          return;
+        } else if (msg.includes('401') || msg.includes('auth') || msg.includes('invalid')) {
+          title = '认证失败';
+          msg = 'API Key 无效，请检查环境变量 DEEPSEEK_API_KEY。';
+        } else if (msg.includes('429')) {
+          title = '请求过于频繁';
+          msg = 'API 调用频率超限，请稍后重试。';
+        } else if (msg.includes('未配置') || msg.includes('API_KEY') || msg.includes('not configured')) {
+          title = 'API 未配置';
+          msg = '服务器未配置 DeepSeek API Key。';
+        }
+        showError(title, msg);
+      }
+    }
+
+    // ====== Keyboard shortcut ======
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        handleGenerate();
+      }
+    });
+
+    // ====== Check server status ======
+    (async () => {
+      try {
+        const resp = await fetch('/api/status');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.configured) {
+            console.log('%c✅ API 已配置，可使用真实 AI 诊断', 'color:#2F9E44');
+          } else {
+            console.log('%c⚠️ API 未配置，将使用 Demo 模式', 'color:#E5A23A');
+          }
+        }
+      } catch (e) {
+        // Not on server
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceMap · 用户口碑 × AI洞察</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F4F5F3;
+  --card: #FFFFFF;
+  --text: #1C2430;
+  --text-muted: #6B7280;
+  --line: #C7CBD1;
+  --line-light: #E8EAE8;
+  --radius: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+  --c1: #4263EB;
+  --c2: #E8590C;
+  --c3: #2F9E44;
+  --c4: #9C36B5;
+  --c5: #E03131;
+  --c6: #0CA678;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(28,36,48,0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container { max-width: 920px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ====== Hero ====== */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(66,99,235,0.08);
+  border: 1px solid rgba(66,99,235,0.2);
+  border-radius: 100px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--c1);
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+
+.hero-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #1C2430 0%, #4263EB 60%, #9C36B5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .subtitle {
+  font-size: 18px;
+  color: var(--text-muted);
+  font-weight: 300;
+  max-width: 580px;
+  margin: 0 auto 40px;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-meta-item {
+  text-align: center;
+}
+
+.hero-meta-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.hero-meta-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* Hero decorative metro line */
+.hero-line {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-top: 48px;
+  height: 40px;
+  align-items: center;
+}
+
+.hero-line-segment {
+  height: 4px;
+  width: 60px;
+  border-radius: 2px;
+  position: relative;
+}
+
+.hero-line-segment::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px currentColor;
+}
+
+/* ====== Section headers ====== */
+.section { padding: 48px 0; }
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 32px;
+}
+
+/* ====== Methodology ====== */
+.method-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.method-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3), var(--c4), var(--c5), var(--c6));
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.method-item {
+  display: flex;
+  gap: 12px;
+}
+
+.method-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+
+.method-text { flex: 1; }
+.method-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.method-text p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ====== Chart ====== */
+.chart-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+
+.chart-row:hover { transform: translateX(4px); }
+
+.chart-row:last-child { margin-bottom: 0; }
+
+.chart-label {
+  width: 200px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-bar-wrap {
+  flex: 1;
+  height: 28px;
+  background: var(--line-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-bar {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 0;
+}
+
+.chart-bar-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.chart-percent {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ====== Pain point cards ====== */
+.pain-list { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+.pain-list::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--line);
+  border-radius: 2px;
+}
+
+.pain-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px 28px 28px 64px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.pain-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.pain-card::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 32px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 3px currentColor, 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 2;
+}
+
+.pain-card::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 32px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  z-index: 1;
+  animation: glow 2.5s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.15; transform: scale(2.2); }
+}
+
+.pain-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.pain-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.pain-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.pain-stat {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.pain-stat-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.pain-stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pain-evidence {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: rgba(0,0,0,0.02);
+  border-left: 3px solid currentColor;
+  border-radius: 0 8px 8px 0;
+}
+
+.pain-evidence-text {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.pain-evidence-source {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.pain-solution {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(66,99,235,0.06), rgba(156,54,181,0.06));
+  border-radius: 10px;
+  border: 1px solid rgba(66,99,235,0.12);
+}
+
+.pain-solution-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--c1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pain-solution-label svg { width: 14px; height: 14px; }
+
+.pain-solution-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.pain-solution-text strong { color: var(--c1); }
+
+/* ====== Loop section ====== */
+.loop-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.loop-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--c5), var(--c2), var(--c1), var(--c4), var(--c3), var(--c6));
+}
+
+.loop-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 32px 0;
+  flex-wrap: wrap;
+}
+
+.loop-node {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  position: relative;
+}
+
+.loop-arrow {
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+.loop-statement {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.loop-statement strong {
+  background: linear-gradient(135deg, var(--c1), var(--c4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ====== Footer ====== */
+.footer {
+  text-align: center;
+  padding: 48px 0 64px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.footer-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
+  margin-bottom: 24px;
+}
+
+.footer-mono {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+/* ====== Animations ====== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pain-card:nth-child(1) { animation-delay: 0.1s; }
+.pain-card:nth-child(2) { animation-delay: 0.2s; }
+.pain-card:nth-child(3) { animation-delay: 0.3s; }
+.pain-card:nth-child(4) { animation-delay: 0.4s; }
+.pain-card:nth-child(5) { animation-delay: 0.5s; }
+.pain-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 40px; }
+  .hero .subtitle { font-size: 16px; }
+  .hero-meta { gap: 20px; }
+  .hero-meta-num { font-size: 28px; }
+  .section-title { font-size: 24px; }
+  .method-grid { grid-template-columns: 1fr; }
+  .chart-label { width: 120px; font-size: 12px; }
+  .pain-card { padding: 24px 20px 24px 52px; }
+  .pain-card::before, .pain-card::after { left: 12px; }
+  .pain-list::before { left: 20px; }
+  .loop-flow { flex-direction: column; }
+  .loop-arrow { transform: rotate(90deg); }
+}
+
+/* ====== Project Nav ====== */
+.project-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,200,200,0.5);
+}
+.nav-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  height: 44px;
+  align-items: center;
+}
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #6B7585;
+  text-decoration: none;
+  border-radius: 100px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-item:hover {
+  background: rgba(26,35,48,0.04);
+  color: #1A2330;
+}
+.nav-item.active {
+  background: #1A2330;
+  color: #fff;
+}
+.nav-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+  <!-- ====== Project Nav ====== -->
+  <nav class="project-nav">
+    <div class="nav-inner">
+      <a href="/voicemap.html" class="nav-item active"><span class="nav-dot" style="background:var(--c3)"></span>VoiceMap</a>
+      <a href="/index.html" class="nav-item"><span class="nav-dot" style="background:var(--c1)"></span>Transit</a>
+      <a href="/screen.html" class="nav-item"><span class="nav-dot" style="background:var(--c4)"></span>Screen</a>
+    </div>
+  </nav>
+
+<!-- ====== Hero ====== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag">CRAWL · ANALYZE · INSIGHT</div>
+    <h1>VoiceMap</h1>
+    <p class="subtitle">抓取牛客网真实求职者发言，AI 聚类分析高频痛点，验证产品立项的真实需求基础</p>
+    
+    <div class="hero-line">
+      <div class="hero-line-segment" style="background: var(--c1); color: var(--c1);"></div>
+      <div class="hero-line-segment" style="background: var(--c2); color: var(--c2);"></div>
+      <div class="hero-line-segment" style="background: var(--c3); color: var(--c3);"></div>
+      <div class="hero-line-segment" style="background: var(--c4); color: var(--c4);"></div>
+      <div class="hero-line-segment" style="background: var(--c5); color: var(--c5);"></div>
+      <div class="hero-line-segment" style="background: var(--c6); color: var(--c6);"></div>
+    </div>
+
+    <div class="hero-meta" style="margin-top: 48px;">
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">22</div>
+        <div class="hero-meta-label">Real Posts</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">3</div>
+        <div class="hero-meta-label">Topic Sources</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">6</div>
+        <div class="hero-meta-label">Pain Clusters</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">100%</div>
+        <div class="hero-meta-label">Real Voice</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Methodology ====== -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">METHODOLOGY</div>
+    <h2 class="section-title">数据怎么来的</h2>
+    
+    <div class="method-card">
+      <div class="method-grid">
+        <div class="method-item">
+          <div class="method-icon" style="background: var(--c1);">01</div>
+          <div class="method-text">
+            <h4>数据源</h4>
+            <p>牛客网「求职话题」聚合页下的 3 个话题帖：投递无反馈、求职低谷期、入行学习地图</p>
+          </div>
+        </div>
+        <div class="method-item">
+          <div class="method-icon" style="background: var(--c2);">02</div>
+          <div class="method-text">
+            <h4>采集方式</h4>
+            <p>Python 爬虫脚本（requests + BeautifulSoup）逐页抓取帖子标题与正文摘要</p>
+          </div>
+        </div>
+        <div class="method-item">
+          <div class="method-icon" style="background: var(--c3);">03</div>
+          <div class="method-text">
+            <h4>分析引擎</h4>
+            <p>DeepSeek API 做主题聚类，自动归纳高频痛点并统计频次占比</p>
+          </div>
+        </div>
+        <div class="method-item">
+          <div class="method-icon" style="background: var(--c4);">04</div>
+          <div class="method-text">
+            <h4>样本规模</h4>
+            <p>22 条真实发言，涵盖双非/211/985 不同背景求职者的第一视角</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Pain Point Distribution ====== -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">DISTRIBUTION</div>
+    <h2 class="section-title">痛点分布一览</h2>
+    
+    <div class="chart-card">
+      <div class="chart-row" data-percent="21.74" data-color="#4263EB">
+        <div class="chart-label"><span class="chart-dot" style="background: #4263EB;"></span>简历与岗位不匹配</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #4263EB;"><span class="chart-bar-num">5</span></div></div>
+        <div class="chart-percent">21.7%</div>
+      </div>
+      <div class="chart-row" data-percent="21.74" data-color="#2F9E44">
+        <div class="chart-label"><span class="chart-dot" style="background: #2F9E44;"></span>缺少实习/项目经历</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #2F9E44;"><span class="chart-bar-num">5</span></div></div>
+        <div class="chart-percent">21.7%</div>
+      </div>
+      <div class="chart-row" data-percent="17.39" data-color="#E8590C">
+        <div class="chart-label"><span class="chart-dot" style="background: #E8590C;"></span>投递无反馈/石沉大海</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #E8590C;"><span class="chart-bar-num">4</span></div></div>
+        <div class="chart-percent">17.4%</div>
+      </div>
+      <div class="chart-row" data-percent="17.39" data-color="#E03131">
+        <div class="chart-label"><span class="chart-dot" style="background: #E03131;"></span>求职焦虑/心态压力大</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #E03131;"><span class="chart-bar-num">4</span></div></div>
+        <div class="chart-percent">17.4%</div>
+      </div>
+      <div class="chart-row" data-percent="13.04" data-color="#9C36B5">
+        <div class="chart-label"><span class="chart-dot" style="background: #9C36B5;"></span>技术/面试准备不足</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #9C36B5;"><span class="chart-bar-num">3</span></div></div>
+        <div class="chart-percent">13.0%</div>
+      </div>
+      <div class="chart-row" data-percent="8.7" data-color="#0CA678">
+        <div class="chart-label"><span class="chart-dot" style="background: #0CA678;"></span>求职方向迷茫</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="background: #0CA678;"><span class="chart-bar-num">2</span></div></div>
+        <div class="chart-percent">8.7%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Pain Point Details ====== -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">PAIN POINTS</div>
+    <h2 class="section-title">六大痛点 · 真实声音</h2>
+    
+    <div class="pain-list">
+      
+      <!-- Pain 1 -->
+      <div class="pain-card fade-in" style="color: #4263EB;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #4263EB;">L1 简历线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">5</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">简历与岗位不匹配 / 简历没亮点</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"投了100多份简历零约面，核心问题不是数量而是简历和岗位JD不匹配；项目经历要用STAR法则，简历上每一行都要能往下聊十分钟。"</div>
+          <div class="pain-evidence-source">— 简历焚诀：投递100+零约面怎么解</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有人求锐评简历准备跳社招，直言工作经历在背调层面有问题，说明简历阶段就卡住了。"</div>
+          <div class="pain-evidence-source">— 26届简历锐评</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">Transit 直接拆解 JD 原文，提取岗位真正要求的能力点，然后生成<strong>与JD一一对应</strong>的项目建议。你做的每个项目都能在面试时说"这个项目就是针对贵司JD里XX要求的"——简历匹配度从源头解决。</div>
+        </div>
+      </div>
+
+      <!-- Pain 2 -->
+      <div class="pain-card fade-in" style="color: #2F9E44;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #2F9E44;">L2 项目线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">5</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">缺少实习 / 项目经历</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"没有项目经验时简历容易被HR直接丢掉，建议通过开源平台做几个项目、把学习过程写成文章发布到知乎，用作品证明能力。"</div>
+          <div class="pain-evidence-source">— 新入行的程序员没有项目经验怎么办</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"可以通过课程作业、自学作品集、低门槛实习来补足经验，并在面试时主动展示，比空谈努力更有说服力。"</div>
+          <div class="pain-evidence-source">— 没有工作经验如何快速积累项目经历</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">这是 Transit 的<strong>核心价值</strong>。不是泛泛建议"做个项目"，而是给出具体到"今天就能写第一行代码"的方案：用什么数据、做什么、产出什么形式、预估几天完成。从"没有项目经历"到"3个可展示项目"只需要一条路线。</div>
+        </div>
+      </div>
+
+      <!-- Pain 3 -->
+      <div class="pain-card fade-in" style="color: #E8590C;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #E8590C;">L3 投递线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">4</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">投递无反馈 / 石沉大海</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有牛友分享自己从已读不回到拿9个offer，关键是别只用默认打招呼语，要抓住HR看到的前18个字，同时选好投递时机并每天拉满沟通量。"</div>
+          <div class="pain-evidence-source">— 从已读不回到9个offer</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有人发帖求助投递总是石沉大海时如何优化策略，希望大家分享让投递更有效的经验，给迷茫的人指路。"</div>
+          <div class="pain-evidence-source">— 投递无反馈如何优化求职策略</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">投递石沉大海的根因是简历没有亮点。Transit 生成的项目建议本身就是<strong>简历上最有竞争力的内容</strong>——做完 Transit 推荐的项目，简历从"空白"变成"有JD对标的实战项目"，投递转化率自然提升。</div>
+        </div>
+      </div>
+
+      <!-- Pain 4 -->
+      <div class="pain-card fade-in" style="color: #E03131;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #E03131;">L4 心态线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">4</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">求职焦虑 / 心态压力大</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有话题专门问求职低谷期怎么熬过，提到简历没回应、面试被拒、无尽泡池子，很多人都有这种绝望时刻。"</div>
+          <div class="pain-evidence-source">— 求职低谷期你是怎么度过的</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有双非同学海投上千份只拿到极少数面试，面完就凉，越面越自卑，陷入严重内耗和焦虑。"</div>
+          <div class="pain-evidence-source">— 我哭死，面试遇贵人了</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">焦虑的根源是<strong>不确定感</strong>——不知道该做什么、做了有没有用。Transit 给的是一条清晰路线：起点站（现在）→ 3个站点（做项目）→ 终点站（作品集就绪）。每一步都有预估时间，消除"不知道该干嘛"的焦虑。</div>
+        </div>
+      </div>
+
+      <!-- Pain 5 -->
+      <div class="pain-card fade-in" style="color: #9C36B5;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #9C36B5;">L5 技术线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">3</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">技术 / 面试准备不足</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"春招被虐三个月后反思：不能只看八股，面试官会追着问'为什么'和'然后呢'；简历上写的东西自己必须能接得住，不会的不要写。"</div>
+          <div class="pain-evidence-source">— 三个月春招被虐穿</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"有人质疑室友只学3个月golang、只做一个项目就想投大厂，暴露了技术积累和项目深度不足的问题。"</div>
+          <div class="pain-evidence-source">— 28届神人舍友</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">Transit 的项目建议不是"做个XX系统"这种空话，而是<strong>具体到技术栈和产出物</strong>——用什么框架、做什么功能、产出什么形式。做完后你能在面试时讲清楚每个技术决策的"为什么"，不会被追问到塌。</div>
+        </div>
+      </div>
+
+      <!-- Pain 6 -->
+      <div class="pain-card fade-in" style="color: #0CA678;">
+        <div class="pain-header">
+          <div>
+            <span class="pain-badge" style="background: #0CA678;">L6 方向线</span>
+          </div>
+          <div class="pain-stat">
+            <div class="pain-stat-num">2</div>
+            <div class="pain-stat-label">POSTS</div>
+          </div>
+        </div>
+        <div class="pain-title">求职方向迷茫 / 职业规划缺失</div>
+        
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"话题下大家讨论为了入行某个岗位到底该学什么，晒学习地图为后来者指路，反映很多人不清楚入行所需技能。"</div>
+          <div class="pain-evidence-source">— 为了入行xx岗我学了什么</div>
+        </div>
+
+        <div class="pain-evidence">
+          <div class="pain-evidence-text">"职业规划讲座强调应届生不能盲目海投，要有顶层设计思维构建核心竞争力，背后是很多人缺乏清晰职业规划。"</div>
+          <div class="pain-evidence-source">— 南开大学职业规划讲座</div>
+        </div>
+
+        <div class="pain-solution">
+          <div class="pain-solution-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            TRANSIT 解决方案
+          </div>
+          <div class="pain-solution-text">Transit 的输入就是<strong>目标岗位的JD</strong>。你不需要自己猜"该学什么"——JD 里写了什么能力要求，Transit 就拆什么、推荐什么项目。方向不是靠想出来的，是靠 JD 倒推出来的。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====== Closed Loop ====== -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">CLOSED LOOP</div>
+    <h2 class="section-title">验证 → 产品 → 闭环</h2>
+    
+    <div class="loop-card">
+      <div class="loop-flow">
+        <div class="loop-node" style="background: rgba(232,89,12,0.1); color: var(--c2); border: 1px solid rgba(232,89,12,0.2);">爬取真实声音</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="background: rgba(66,99,235,0.1); color: var(--c1); border: 1px solid rgba(66,99,235,0.2);">AI 聚类痛点</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="background: rgba(47,158,68,0.1); color: var(--c3); border: 1px solid rgba(47,158,68,0.2);">Transit 针对性解决</div>
+      </div>
+      
+      <p class="loop-statement">
+        22 条真实求职者发言证明了：<strong>"没有项目经历"和"简历不匹配"</strong>是占比最高的两个痛点（各 21.7%）。<br><br>
+        Transit（项目二）正是针对这两个核心痛点设计的——输入 JD，输出可以直接开工的项目路线。<br><br>
+        <strong>先验证问题真实存在，再针对性做产品。</strong>这不是拍脑袋想的需求，是真实用户用脚投票的结果。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Footer ====== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-line"></div>
+    <div class="footer-mono">VoiceMap · 用户口碑爬虫 × AI产品改进报告</div>
+    <div style="margin-top: 8px; font-size: 12px;">数据来源：牛客网公开帖子 · 分析引擎：DeepSeek API · 视觉体系：Transit Metro Line</div>
+  </div>
+</footer>
+
+<script>
+// Animate chart bars on load
+window.addEventListener('load', () => {
+  const rows = document.querySelectorAll('.chart-row');
+  rows.forEach((row, i) => {
+    const percent = parseFloat(row.dataset.percent);
+    const bar = row.querySelector('.chart-bar');
+    setTimeout(() => {
+      bar.style.width = (percent / 22 * 100) + '%';
+    }, 200 + i * 150);
+  });
+});
+
+// Intersection Observer for fade-in cards
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  observer.observe(el);
+});
+</script>
+
+</body>
+</html>
