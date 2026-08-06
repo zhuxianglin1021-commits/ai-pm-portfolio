@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI PM 作品集 · 项目报告</title>
+  <title>AI PM 求职作品集</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -59,7 +59,6 @@
 
     ::selection { background: rgba(225,90,66,0.12); }
 
-    /* ====== Slide System ====== */
     .deck {
       width: 100vw;
       height: 100vh;
@@ -95,7 +94,6 @@
       position: relative;
     }
 
-    /* ====== Common Components ====== */
     .tag {
       display: inline-flex;
       align-items: center;
@@ -157,7 +155,6 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
-      opacity: 0.8;
     }
 
     .card.l1::before { background: linear-gradient(90deg, var(--l1), transparent); }
@@ -167,7 +164,6 @@
     .card.l5::before { background: linear-gradient(90deg, var(--l5), transparent); }
     .card.rainbow::before { background: linear-gradient(90deg, var(--l1), var(--l3) 33%, var(--l4) 66%, var(--l5)); }
 
-    /* ====== Navigation ====== */
     .nav-bar {
       position: fixed;
       bottom: 24px;
@@ -221,7 +217,6 @@
       font-weight: 700;
     }
 
-    /* Progress dots */
     .progress-dots {
       position: fixed;
       right: 32px;
@@ -247,7 +242,6 @@
       background: var(--l4);
     }
 
-    /* ====== Slide 1: Cover ====== */
     .cover { text-align: center; }
 
     .cover-metro {
@@ -313,7 +307,7 @@
     .cover .subtitle {
       font-size: 18px;
       color: var(--text-secondary);
-      max-width: 560px;
+      max-width: 620px;
       margin: 0 auto 48px;
       line-height: 1.75;
     }
@@ -343,7 +337,25 @@
       margin-top: 4px;
     }
 
-    /* ====== Slide 2: Background ====== */
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #1A2330 0%, #2A3B5C 50%, #3E5FCC 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .slide-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
     .bg-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -369,6 +381,7 @@
 
     .bg-card .icon.red { background: rgba(225,90,66,0.1); color: var(--l1); }
     .bg-card .icon.green { background: rgba(29,143,128,0.1); color: var(--l2); }
+    .bg-card .icon.blue { background: rgba(62,95,204,0.1); color: var(--l4); }
 
     .bg-card h3 {
       font-family: var(--font-display);
@@ -383,26 +396,6 @@
       line-height: 1.7;
     }
 
-    .slide-title {
-      font-family: var(--font-display);
-      font-size: 44px;
-      font-weight: 700;
-      letter-spacing: -1.5px;
-      line-height: 1.15;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #1A2330 0%, #2A3B5C 50%, #3E5FCC 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .slide-desc {
-      font-size: 16px;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    /* ====== Slide 3: Product Matrix ====== */
     .matrix {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -463,13 +456,13 @@
       margin-bottom: 16px;
     }
 
-    .matrix-card .tech-tags {
+    .matrix-card .pm-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
 
-    .tech-tag {
+    .pm-tag {
       font-family: var(--font-mono);
       font-size: 10px;
       padding: 3px 8px;
@@ -479,7 +472,6 @@
       border: 1px solid var(--border);
     }
 
-    /* ====== Slide 4-6: Module Details ====== */
     .module-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -601,76 +593,93 @@
     .label-result { background: rgba(29,143,128,0.1); color: var(--l2); }
     .label-final { background: rgba(62,95,204,0.1); color: var(--l4); }
 
-    /* ====== Slide 7: Architecture ====== */
-    .arch-diagram {
+    .user-flow {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .flow-step {
+      flex: 1;
       background: var(--bg-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 40px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .arch-layer {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .arch-layer-label {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      width: 80px;
-      flex-shrink: 0;
-      text-align: right;
-    }
-
-    .arch-nodes {
-      display: flex;
-      gap: 12px;
-      flex: 1;
-    }
-
-    .arch-node {
-      flex: 1;
-      padding: 14px 16px;
-      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      background: var(--bg-card);
-      font-size: 13px;
+      border-radius: var(--radius-sm);
+      padding: 16px;
       text-align: center;
       position: relative;
     }
 
-    .arch-node .node-title {
+    .flow-step::after {
+      content: '→';
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    .flow-step:last-child::after { display: none; }
+
+    .flow-step .flow-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 16px;
+    }
+
+    .flow-step .flow-title {
       font-weight: 600;
+      font-size: 13px;
       margin-bottom: 4px;
     }
 
-    .arch-node .node-tech {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-tertiary);
+    .flow-step .flow-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
 
-    .arch-node.frontend { border-top: 3px solid var(--l4); }
-    .arch-node.backend { border-top: 3px solid var(--l1); }
-    .arch-node.ai { border-top: 3px solid var(--l5); }
-    .arch-node.deploy { border-top: 3px solid var(--l2); }
-
-    .arch-arrow {
-      text-align: center;
-      color: var(--text-tertiary);
-      font-size: 16px;
-      margin: 4px 0;
-      padding-left: 92px;
+    .pm-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    /* ====== Slide 8-9: Tech Highlights ====== */
+    .pm-table th, .pm-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .pm-table th {
+      background: rgba(26,35,48,0.03);
+      font-weight: 600;
+      font-family: var(--font-display);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .pm-table tr:last-child td { border-bottom: none; }
+
+    .pm-table td:first-child {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .pm-table .evidence {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
     .highlight-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -719,23 +728,6 @@
       line-height: 1.75;
     }
 
-    .highlight-card .code-snippet {
-      margin-top: 16px;
-      padding: 12px;
-      background: #1A2330;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      line-height: 1.6;
-      color: #A0C4E8;
-      overflow-x: auto;
-    }
-
-    .highlight-card .code-snippet .kw { color: #C792EA; }
-    .highlight-card .code-snippet .str { color: #C3E88D; }
-    .highlight-card .code-snippet .com { color: #546E7A; }
-
-    /* ====== Slide 10: Results ====== */
     .result-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -781,7 +773,6 @@
       word-break: break-all;
     }
 
-    /* ====== Slide 11: End ====== */
     .end-slide { text-align: center; }
 
     .end-slide h1 {
@@ -836,7 +827,6 @@
       border-color: var(--text-primary);
     }
 
-    /* ====== Keyboard hint ====== */
     .kb-hint {
       position: fixed;
       bottom: 24px;
@@ -856,7 +846,48 @@
       margin: 0 2px;
     }
 
-    /* Responsive */
+    .loop-diagram {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .loop-node {
+      text-align: center;
+      padding: 18px 22px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      min-width: 120px;
+    }
+
+    .loop-node .loop-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .loop-node .loop-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .loop-node .loop-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .loop-arrow {
+      color: var(--text-tertiary);
+      font-size: 20px;
+    }
+
     @media (max-width: 900px) {
       .slide { padding: 40px 24px; }
       .cover h1 { font-size: 44px; }
@@ -864,6 +895,10 @@
       .bg-grid, .module-layout, .highlight-grid, .result-grid { grid-template-columns: 1fr; }
       .matrix { grid-template-columns: 1fr; }
       .progress-dots { display: none; }
+      .user-flow { flex-direction: column; }
+      .flow-step::after { display: none; }
+      .loop-diagram { flex-direction: column; }
+      .loop-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
@@ -887,9 +922,9 @@
         <span class="dot"></span>
         AI PRODUCT MANAGER · PORTFOLIO
       </div>
-      <h1>AI PM 作品集</h1>
+      <h1>AI PM 求职作品集</h1>
       <p class="subtitle">
-        从用户洞察到产品落地 —— 用 AI Agent 帮应届生把 JD 变成可执行的项目路线图<br>
+        AI 产品经理求职作品集 · 用户洞察 × 智能规划 × 简历诊断<br>
         VoiceMap · Transit · Screen 三位一体产品矩阵
       </p>
       <div class="cover-meta">
@@ -906,37 +941,37 @@
           <div class="cover-meta-label">痛点聚类</div>
         </div>
         <div class="cover-meta-item">
-          <div class="cover-meta-num">8</div>
-          <div class="cover-meta-label">Git Commits</div>
+          <div class="cover-meta-num">1</div>
+          <div class="cover-meta-label">闭环链路</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== Slide 2: Background ====== -->
+  <!-- ====== Slide 2: Problem Definition ====== -->
   <section class="slide" data-slide="2">
     <div class="slide-inner">
-      <div class="section-label">01 — PROJECT BACKGROUND</div>
+      <div class="section-label">01 — PROBLEM DEFINITION</div>
       <h2 class="slide-title">为什么做这个项目？</h2>
-      <p class="slide-desc">应届生求职时面临的核心矛盾，以及 AI 如何介入</p>
+      <p class="slide-desc">从目标用户的核心矛盾出发，定义产品机会</p>
 
       <div class="bg-grid">
         <div class="bg-card">
           <div class="icon red">⚠</div>
           <h3>用户痛点</h3>
           <p>
-            应届生看到 JD 上的「有经验」「熟悉XX」就发懵 —— 知道要准备项目，
-            但不知道做什么、怎么做、做到什么程度算够。投了 50 份简历石沉大海，
-            却不知道问题出在哪里。
+            应届生投递 AI/产品岗位时，JD 上要求「数据分析」「SQL」「用户研究」「A/B 测试」等能力，
+            但不知道做什么项目、怎么写进简历、如何证明自己匹配。
+            投 50 份简历没回音，却不知道问题在哪。
           </p>
         </div>
         <div class="bg-card">
           <div class="icon green">→</div>
-          <h3>产品解法</h3>
+          <h3>产品机会</h3>
           <p>
-            用 AI Agent 自动分析 JD，搜索真实开源项目和数据集，
-            生成可执行的项目路线图。再用简历 X 光机逐项扫描匹配度，
-            形成「分析 → 执行 → 验证」的完整闭环。
+            把 JD 从「门槛」变成「路线图」。
+            用 AI 帮助用户把任职要求翻译成可执行的项目计划，
+            再用诊断工具验证简历匹配度，形成「分析 → 执行 → 验证」闭环。
           </p>
         </div>
       </div>
@@ -944,110 +979,43 @@
       <div style="margin-top: 24px; padding: 20px 28px; background: var(--bg-card); border-radius: var(--radius); border-left: 4px solid var(--l4); box-shadow: var(--shadow-sm);">
         <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px;">CORE INSIGHT</div>
         <div style="font-size: 15px; color: var(--text-primary); line-height: 1.7;">
-          JD 不是门槛，是路线图。每一句「任职要求」都对应一个可执行的项目 —— 缺的不是能力，是把能力翻译成行动的方法。
+          缺的不是能力，而是把能力翻译成行动的方法。AI 应该把 JD 的模糊要求，转化为用户今天就能开始的具体任务。
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== Slide 3: Product Matrix ====== -->
+  <!-- ====== Slide 3: User Research ====== -->
   <section class="slide" data-slide="3">
     <div class="slide-inner">
-      <div class="section-label">02 — PRODUCT MATRIX</div>
-      <h2 class="slide-title">三个模块，一个闭环</h2>
-      <p class="slide-desc">VoiceMap 发现需求 → Transit 生成方案 → Screen 验证匹配</p>
+      <div class="section-label">02 — USER RESEARCH</div>
+      <h2 class="slide-title">用真实声音证明需求存在</h2>
+      <p class="slide-desc">VoiceMap：22 条求职帖 → AI 主题聚类 → 6 大痛点</p>
 
-      <div class="matrix">
-        <div class="matrix-card m1">
-          <div class="line-top"></div>
-          <div class="num">01</div>
-          <h3>VoiceMap</h3>
-          <div class="role">用户口碑洞察</div>
-          <div class="desc">
-            抓取牛客网 22 条真实求职帖，用 AI 聚类出 6 大痛点，
-            量化需求真实性和紧迫性。
-          </div>
-          <div class="tech-tags">
-            <span class="tech-tag">WebFetch</span>
-            <span class="tech-tag">DeepSeek</span>
-            <span class="tech-tag">SVG Chart</span>
-          </div>
-        </div>
-
-        <div class="matrix-card m2">
-          <div class="line-top"></div>
-          <div class="num">02</div>
-          <h3>Transit</h3>
-          <div class="role">JD 路线图生成器</div>
-          <div class="desc">
-            AI Agent 自动分析 JD，调用 GitHub/HuggingFace 搜索真实资源，
-            生成 3 条可执行的项目路线。SSE 流式推送思考过程。
-          </div>
-          <div class="tech-tags">
-            <span class="tech-tag">Agent Loop</span>
-            <span class="tech-tag">Function Calling</span>
-            <span class="tech-tag">SSE</span>
-            <span class="tech-tag">Edge Function</span>
-          </div>
-        </div>
-
-        <div class="matrix-card m3">
-          <div class="line-top"></div>
-          <div class="num">03</div>
-          <h3>Screen</h3>
-          <div class="role">简历 X 光机</div>
-          <div class="desc">
-            上传 PDF/DOCX 简历，浏览器端解析文本，
-            AI 逐项扫描与 JD 的匹配度，输出三色信号灯诊断报告。
-          </div>
-          <div class="tech-tags">
-            <span class="tech-tag">pdfjs-dist</span>
-            <span class="tech-tag">mammoth.js</span>
-            <span class="tech-tag">Serverless</span>
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 32px; font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">
-        <span style="color: var(--l4);">VoiceMap</span>
-        <span>→</span>
-        <span style="color: var(--l1);">Transit</span>
-        <span>→</span>
-        <span style="color: var(--l2);">Screen</span>
-        <span style="margin-left: 8px; color: var(--text-tertiary);">发现需求 → 生成方案 → 验证匹配</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== Slide 4: VoiceMap Detail ====== -->
-  <section class="slide" data-slide="4">
-    <div class="slide-inner">
-      <div class="section-label">MODULE 01</div>
       <div class="module-layout">
         <div class="module-left">
           <div class="module-tag" style="background: rgba(62,95,204,0.08); color: var(--l4);">VoiceMap · 用户口碑洞察</div>
-          <h2 style="color: var(--text-primary);">用数据证明<br>需求是真实的</h2>
+          <h2 style="color: var(--text-primary);">不拍脑袋，<br>用数据说话</h2>
           <p class="module-desc">
-            不是拍脑袋想需求，而是从真实用户声音中挖掘痛点。
-            抓取牛客网求职讨论帖，用 AI 做主题聚类，
-            量化每个痛点的出现频率。
+            产品决策的前提是需求真实。我抓取牛客网求职讨论帖，收集真实用户声音，
+            通过 AI 聚类量化痛点频率，为后续产品功能排优先级。
           </p>
           <ul class="feature-list">
             <li>
               <div class="check c3">①</div>
-              <div>WebFetch 逐页抓取 3 个话题帖，收集 <strong>22 条真实发言</strong></div>
+              <div>从 3 个热门话题帖抓取 <strong>22 条真实发言</strong></div>
             </li>
             <li>
               <div class="check c3">②</div>
-              <div>DeepSeek API 主题聚类，归纳出 <strong>6 大痛点</strong></div>
+              <div>用 AI 主题聚类，归纳出 <strong>6 大痛点</strong></div>
             </li>
             <li>
               <div class="check c3">③</div>
-              <div>SVG 水平条形图可视化痛点分布，每个痛点映射到 Transit 解决方案</div>
+              <div>用 SVG 图表量化痛点分布，辅助需求优先级排序</div>
             </li>
             <li>
               <div class="check c3">④</div>
-              <div>纯静态页面，数据固化在 JSON 中，无后端依赖</div>
+              <div>每个痛点反向映射到 Transit 解决方案</div>
             </li>
           </ul>
         </div>
@@ -1057,17 +1025,17 @@
               <div class="demo-dot" style="background: var(--l4);"></div>
               <div class="demo-dot" style="background: var(--l3); opacity: 0.5;"></div>
               <div class="demo-dot" style="background: var(--l2); opacity: 0.3;"></div>
-              <div class="demo-title">pain_points.json</div>
+              <div class="demo-title">痛点聚类结果</div>
             </div>
-            <div class="demo-body" style="font-family: var(--font-mono); font-size: 12px; line-height: 2; color: var(--text-secondary);">
-              <div style="color: var(--l1);">▎ 痛点 #1 · 不知道做什么项目 <span style="color: var(--text-tertiary);">(68%)</span></div>
-              <div style="color: var(--l3);">▎ 痛点 #2 · 简历不知道怎么写 <span style="color: var(--text-tertiary);">(55%)</span></div>
-              <div style="color: var(--l4);">▎ 痛点 #3 · JD 看不懂术语 <span style="color: var(--text-tertiary);">(45%)</span></div>
-              <div style="color: var(--l5);">▎ 痛点 #4 · 投了很多没回音 <span style="color: var(--text-tertiary);">(41%)</span></div>
-              <div style="color: var(--l2);">▎ 痛点 #5 · 缺乏实战经验 <span style="color: var(--text-tertiary);">(36%)</span></div>
-              <div style="color: var(--signal-red);">▎ 痛点 #6 · 面试被问住 <span style="color: var(--text-tertiary);">(27%)</span></div>
+            <div class="demo-body" style="font-family: var(--font-body); font-size: 13px; line-height: 2; color: var(--text-secondary);">
+              <div style="color: var(--l1);">▎ 不知道做什么项目 <span style="color: var(--text-tertiary);">(68%)</span></div>
+              <div style="color: var(--l3);">▎ 简历不知道怎么写 <span style="color: var(--text-tertiary);">(55%)</span></div>
+              <div style="color: var(--l4);">▎ JD 术语看不懂 <span style="color: var(--text-tertiary);">(45%)</span></div>
+              <div style="color: var(--l5);">▎ 投了很多没回音 <span style="color: var(--text-tertiary);">(41%)</span></div>
+              <div style="color: var(--l2);">▎ 缺乏实战经验 <span style="color: var(--text-tertiary);">(36%)</span></div>
+              <div style="color: var(--signal-red);">▎ 面试被问住 <span style="color: var(--text-tertiary);">(27%)</span></div>
             </div>
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-tertiary);">
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono);">
               数据来源：牛客网 · 22 条真实求职帖 · AI 主题聚类
             </div>
           </div>
@@ -1076,34 +1044,141 @@
     </div>
   </section>
 
-  <!-- ====== Slide 5: Transit Detail ====== -->
+  <!-- ====== Slide 4: Product Strategy ====== -->
+  <section class="slide" data-slide="4">
+    <div class="slide-inner">
+      <div class="section-label">03 — PRODUCT STRATEGY</div>
+      <h2 class="slide-title">三个模块，一个闭环</h2>
+      <p class="slide-desc">从洞察到方案到验证的产品矩阵设计</p>
+
+      <div class="matrix">
+        <div class="matrix-card m1">
+          <div class="line-top"></div>
+          <div class="num">01</div>
+          <h3>VoiceMap</h3>
+          <div class="role">用户口碑洞察</div>
+          <div class="desc">
+            发现需求。用真实用户声音量化痛点优先级，
+            回答「为什么做这个项目」。
+          </div>
+          <div class="pm-tags">
+            <span class="pm-tag">用户研究</span>
+            <span class="pm-tag">需求分析</span>
+            <span class="pm-tag">数据聚类</span>
+          </div>
+        </div>
+
+        <div class="matrix-card m2">
+          <div class="line-top"></div>
+          <div class="num">02</div>
+          <h3>Transit</h3>
+          <div class="role">JD 路线图生成器</div>
+          <div class="desc">
+            生成方案。AI Agent 把 JD 翻译成 3 条可执行的项目路线，
+            并自动搜索真实资源。
+          </div>
+          <div class="pm-tags">
+            <span class="pm-tag">产品规划</span>
+            <span class="pm-tag">AI 应用</span>
+            <span class="pm-tag">Agent 设计</span>
+          </div>
+        </div>
+
+        <div class="matrix-card m3">
+          <div class="line-top"></div>
+          <div class="num">03</div>
+          <h3>Screen</h3>
+          <div class="role">简历 X 光机</div>
+          <div class="desc">
+            验证匹配。上传简历后逐项扫描与 JD 的匹配度，
+            输出可落地的改进建议。
+          </div>
+          <div class="pm-tags">
+            <span class="pm-tag">用户体验</span>
+            <span class="pm-tag">效果验证</span>
+            <span class="pm-tag">反馈闭环</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loop-diagram" style="margin-top: 28px;">
+        <div class="loop-node" style="border-top: 3px solid var(--l4);">
+          <div class="loop-icon">🔍</div>
+          <div class="loop-title">洞察</div>
+          <div class="loop-desc">VoiceMap 发现痛点</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l1);">
+          <div class="loop-icon">✏</div>
+          <div class="loop-title">规划</div>
+          <div class="loop-desc">Transit 生成路线</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l2);">
+          <div class="loop-icon">✓</div>
+          <div class="loop-title">验证</div>
+          <div class="loop-desc">Screen 诊断匹配</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l5);">
+          <div class="loop-icon">↻</div>
+          <div class="loop-title">迭代</div>
+          <div class="loop-desc">回到 Transit 优化</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Slide 5: Transit Product Design ====== -->
   <section class="slide" data-slide="5">
     <div class="slide-inner">
-      <div class="section-label">MODULE 02 · CORE PRODUCT</div>
-      <div class="module-layout">
+      <div class="section-label">04 — PRODUCT DESIGN · CORE</div>
+      <h2 class="slide-title">Transit：把 JD 变成可执行路线图</h2>
+      <p class="slide-desc">核心产品：用户旅程设计与关键决策</p>
+
+      <div class="user-flow" style="margin-bottom: 28px;">
+        <div class="flow-step" style="border-top: 3px solid var(--l1);">
+          <div class="flow-icon" style="background: rgba(225,90,66,0.1);">📝</div>
+          <div class="flow-title">粘贴 JD</div>
+          <div class="flow-desc">岗位职责 + 任职要求分开输入</div>
+        </div>
+        <div class="flow-step" style="border-top: 3px solid var(--l3);">
+          <div class="flow-icon" style="background: rgba(229,162,58,0.1);">🤖</div>
+          <div class="flow-title">AI 分析</div>
+          <div class="flow-desc">提取能力维度与隐含要求</div>
+        </div>
+        <div class="flow-step" style="border-top: 3px solid var(--l4);">
+          <div class="flow-icon" style="background: rgba(62,95,204,0.1);">🔍</div>
+          <div class="flow-title">搜索资源</div>
+          <div class="flow-desc">GitHub + 数据集真实项目</div>
+        </div>
+        <div class="flow-step" style="border-top: 3px solid var(--l2);">
+          <div class="flow-icon" style="background: rgba(29,143,128,0.1);">🚇</div>
+          <div class="flow-title">生成路线</div>
+          <div class="flow-desc">3 条地铁线式项目计划</div>
+        </div>
+      </div>
+
+      <div class="module-layout" style="grid-template-columns: 1.2fr 0.8fr;">
         <div class="module-left">
           <div class="module-tag" style="background: rgba(225,90,66,0.08); color: var(--l1);">Transit · JD 路线图生成器</div>
-          <h2 style="color: var(--text-primary);">AI Agent 自主搜索<br>生成可执行路线图</h2>
-          <p class="module-desc">
-            不是简单的"调一次 API 返回结果"，而是真正的 AI Agent 循环 ——
-            Agent 自主决定调用什么工具、搜索什么关键词、什么时候停止搜索开始总结。
-          </p>
+          <h2 style="color: var(--text-primary); font-size: 34px;">关键产品决策</h2>
           <ul class="feature-list">
             <li>
-              <div class="check c1">⚡</div>
-              <div><strong>Agent Loop</strong>：最多 8 轮循环，AI 自主决策</div>
+              <div class="check c1">①</div>
+              <div><strong>双输入框设计：</strong>把「岗位职责」和「任职要求」分开，让 AI 分别从业务目标和能力要求两个维度分析</div>
             </li>
             <li>
-              <div class="check c1">🔧</div>
-              <div><strong>Function Calling</strong>：search_github / search_datasets 真实调用</div>
+              <div class="check c1">②</div>
+              <div><strong>3 条路线：</strong>不是 1 条（太窄）也不是 5 条（选择过载），提供低 / 中 / 高投入三种路径</div>
             </li>
             <li>
-              <div class="check c1">📡</div>
-              <div><strong>SSE 流式推送</strong>：思考过程实时显示，用户不用等</div>
+              <div class="check c1">③</div>
+              <div><strong>地铁线视觉：</strong>把抽象的「准备过程」变成可跟随的站点，降低心理门槛</div>
             </li>
             <li>
-              <div class="check c1">🎯</div>
-              <div><strong>两阶段架构</strong>：自然语言总结 → 低 temperature JSON 格式化</div>
+              <div class="check c1">④</div>
+              <div><strong>真实资源引用：</strong>每条路线附带 GitHub 项目、数据集链接，用户可直接复用</div>
             </li>
           </ul>
         </div>
@@ -1111,34 +1186,26 @@
           <div class="demo-card">
             <div class="demo-header">
               <div class="demo-dot" style="background: var(--l1);"></div>
-              <div class="demo-dot" style="background: var(--l3); opacity: 0.5;"></div>
-              <div class="demo-dot" style="background: var(--l2); opacity: 0.3;"></div>
-              <div class="demo-title">Agent 执行过程（实时流式）</div>
+              <div class="demo-title">路线卡片示例</div>
             </div>
-            <div class="demo-body">
-              <div class="demo-step">
-                <div class="step-num">01</div>
-                <div class="step-text"><span class="label label-thinking">thinking</span>分析 JD：需要数据分析 + 可视化能力</div>
+            <div class="demo-body" style="font-size: 12px; line-height: 1.9;">
+              <div style="font-weight: 600; margin-bottom: 6px; color: var(--l1);">L1 路线 · 用户增长漏斗分析</div>
+              <div style="color: var(--text-secondary); margin-bottom: 12px;">
+                对应 JD：数据分析、漏斗转化、指标体系
               </div>
-              <div class="demo-step">
-                <div class="step-num">02</div>
-                <div class="step-text"><span class="label label-tool">tool_call</span>search_github("data visualization dashboard")</div>
-              </div>
-              <div class="demo-step">
-                <div class="step-num">03</div>
-                <div class="step-text"><span class="label label-result">result</span>找到 5 个仓库，最高 ⭐ 12.3k</div>
-              </div>
-              <div class="demo-step">
-                <div class="step-num">04</div>
-                <div class="step-text"><span class="label label-tool">tool_call</span>search_datasets("user behavior analytics")</div>
-              </div>
-              <div class="demo-step">
-                <div class="step-num">05</div>
-                <div class="step-text"><span class="label label-result">result</span>找到 3 个数据集可用</div>
-              </div>
-              <div class="demo-step">
-                <div class="step-num">06</div>
-                <div class="step-text"><span class="label label-final">final</span>生成 3 条项目路线（L1/L2/L3）</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; gap: 8px;">
+                  <span style="color: var(--l4); font-family: var(--font-mono); font-size: 10px;">Step 1</span>
+                  <span>复用公开电商数据集</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <span style="color: var(--l4); font-family: var(--font-mono); font-size: 10px;">Step 2</span>
+                  <span>构建 AARRR 漏斗模型</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <span style="color: var(--l4); font-family: var(--font-mono); font-size: 10px;">Step 3</span>
+                  <span>输出增长优化建议</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1147,35 +1214,100 @@
     </div>
   </section>
 
-  <!-- ====== Slide 6: Screen Detail ====== -->
+  <!-- ====== Slide 6: AI Application Strategy ====== -->
   <section class="slide" data-slide="6">
     <div class="slide-inner">
-      <div class="section-label">MODULE 03</div>
+      <div class="section-label">05 — AI APPLICATION STRATEGY</div>
+      <h2 class="slide-title">AI 应用策略：不只是调用 API</h2>
+      <p class="slide-desc">为什么用 Agent Loop + Function Calling，而不是单次大模型调用</p>
+
+      <div class="highlight-grid">
+        <div class="highlight-card h1">
+          <div class="h-icon">AI DECISION 01</div>
+          <h3>从「单次问答」到「Agent 循环」</h3>
+          <p>
+            如果只用大模型生成项目建议，结果可能是编的。
+            我让 AI 自己决定什么时候搜索 GitHub、什么时候搜索数据集、
+            什么时候停止搜索开始总结，保证每条路线都有真实资源支撑。
+          </p>
+          <div style="margin-top: 14px; padding: 12px; background: var(--bg); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+            <strong>产品价值：</strong>解决大模型「幻觉」问题，让 AI 输出可落地、可验证。
+          </div>
+        </div>
+
+        <div class="highlight-card h2">
+          <div class="h-icon">AI DECISION 02</div>
+          <h3>SSE 流式反馈，降低等待焦虑</h3>
+          <p>
+            Agent 循环需要多轮 API 调用，等待时间可达 10-20 秒。
+            我用 SSE（服务器推送事件）把每一步思考过程实时显示给用户，
+            让用户感知到 AI 正在工作，而不是卡住了。
+          </p>
+          <div style="margin-top: 14px; padding: 12px; background: var(--bg); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+            <strong>产品价值：</strong>把「黑盒等待」变成「透明过程」，提升用户信任感。
+          </div>
+        </div>
+
+        <div class="highlight-card h3">
+          <div class="h-icon">AI DECISION 03</div>
+          <h3>两阶段输出：先思考，再结构化</h3>
+          <p>
+            第一阶段让 AI 自由发散，生成自然语言的项目建议；
+            第二阶段用低 temperature 强制格式化为严格 JSON，
+            保证前端能稳定渲染。兼顾创造性与结构化。
+          </p>
+          <div style="margin-top: 14px; padding: 12px; background: var(--bg); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+            <strong>产品价值：</strong>避免 AI 输出不稳定导致前端崩溃，提升可用性。
+          </div>
+        </div>
+
+        <div class="highlight-card h4">
+          <div class="h-icon">AI DECISION 04</div>
+          <h3>浏览器端解析，保护隐私</h3>
+          <p>
+            Screen 的 PDF / DOCX 解析放在浏览器端完成，
+            简历文本不上传服务器。在满足功能需求的同时，
+            降低用户对隐私泄露的担忧。
+          </p>
+          <div style="margin-top: 14px; padding: 12px; background: var(--bg); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+            <strong>产品价值：</strong>隐私优先设计，提升用户上传意愿。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Slide 7: Screen Product Design ====== -->
+  <section class="slide" data-slide="7">
+    <div class="slide-inner">
+      <div class="section-label">06 — PRODUCT DESIGN · VALIDATION</div>
+      <h2 class="slide-title">Screen：像安检一样逐项扫描简历</h2>
+      <p class="slide-desc">诊断工具的设计逻辑：把模糊焦虑变成具体行动</p>
+
       <div class="module-layout">
         <div class="module-left">
           <div class="module-tag" style="background: rgba(29,143,128,0.08); color: var(--l2);">Screen · 简历 X 光机</div>
-          <h2 style="color: var(--text-primary);">像安检一样<br>逐项扫描简历</h2>
+          <h2 style="color: var(--text-primary);">把「不知道差在哪」<br>变成「知道补什么」</h2>
           <p class="module-desc">
-            上传 PDF/DOCX 简历，浏览器端解析文本（文件不上传服务器），
-            AI 从「岗位职责」和「任职要求」两个维度逐项匹配，
-            输出三色信号灯诊断报告。
+            简历被拒的原因往往是隐性的。Screen 从 JD 的两个维度逐项扫描简历，
+            用直观的视觉符号告诉用户：哪些匹配、哪些部分匹配、哪些完全缺失。
           </p>
           <ul class="feature-list">
             <li>
-              <div class="check c2">📄</div>
-              <div><strong>浏览器端 PDF 解析</strong>：pdfjs-dist + Web Worker，文件不上传</div>
+              <div class="check c2">①</div>
+              <div><strong>双维度匹配：</strong>分别检查「岗位职责」和「任职要求」，避免只看关键词</div>
             </li>
             <li>
-              <div class="check c2">📝</div>
-              <div><strong>浏览器端 DOCX 解析</strong>：mammoth.js extractRawText()</div>
+              <div class="check c2">②</div>
+              <div><strong>三色信号灯：</strong>绿 / 黄 / 红 一目了然，降低认知负担</div>
             </li>
             <li>
-              <div class="check c2">🚦</div>
-              <div><strong>三色信号灯</strong>：绿(match) / 黄(partial) / 红(missing)</div>
+              <div class="check c2">③</div>
+              <div><strong>隐私优先：</strong>浏览器端解析文件，不上传服务器</div>
             </li>
             <li>
-              <div class="check c2">📊</div>
-              <div><strong>评分环 + 逐项卡片</strong>：SVG 圆环动画 + 详细诊断</div>
+              <div class="check c2">④</div>
+              <div><strong>可执行建议：</strong>每个缺失项都给出具体改进方向，不只是打分</div>
             </li>
           </ul>
         </div>
@@ -1218,230 +1350,99 @@
     </div>
   </section>
 
-  <!-- ====== Slide 7: Architecture ====== -->
-  <section class="slide" data-slide="7">
-    <div class="slide-inner">
-      <div class="section-label">03 — TECH ARCHITECTURE</div>
-      <h2 class="slide-title">技术架构总览</h2>
-      <p class="slide-desc">前端三页面 + 后端三 Serverless Function + 两个外部 API + 一个 AI Agent</p>
-
-      <div class="arch-diagram">
-        <div class="arch-layer">
-          <div class="arch-layer-label">Frontend</div>
-          <div class="arch-nodes">
-            <div class="arch-node frontend">
-              <div class="node-title">index.html</div>
-              <div class="node-tech">Transit · SSE Client</div>
-            </div>
-            <div class="arch-node frontend">
-              <div class="node-title">screen.html</div>
-              <div class="node-tech">pdfjs + mammoth</div>
-            </div>
-            <div class="arch-node frontend">
-              <div class="node-title">voicemap.html</div>
-              <div class="node-tech">SVG · Static</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="arch-arrow">↓ fetch / SSE</div>
-
-        <div class="arch-layer">
-          <div class="arch-layer-label">Backend</div>
-          <div class="arch-nodes">
-            <div class="arch-node backend">
-              <div class="node-title">api/agent.js</div>
-              <div class="node-tech">Edge Function · Agent Loop</div>
-            </div>
-            <div class="arch-node backend">
-              <div class="node-title">api/chat.js</div>
-              <div class="node-tech">Serverless · DeepSeek</div>
-            </div>
-            <div class="arch-node backend">
-              <div class="node-title">api/status.js</div>
-              <div class="node-tech">Serverless · Health Check</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="arch-arrow">↓ API Call</div>
-
-        <div class="arch-layer">
-          <div class="arch-layer-label">AI / External</div>
-          <div class="arch-nodes">
-            <div class="arch-node ai">
-              <div class="node-title">DeepSeek API</div>
-              <div class="node-tech">deepseek-v4-flash · Function Calling</div>
-            </div>
-            <div class="arch-node ai">
-              <div class="node-title">GitHub Search API</div>
-              <div class="node-tech">真实仓库搜索</div>
-            </div>
-            <div class="arch-node ai">
-              <div class="node-title">HuggingFace API</div>
-              <div class="node-tech">公开数据集搜索</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="arch-arrow">↓ Deploy</div>
-
-        <div class="arch-layer">
-          <div class="arch-layer-label">Deploy</div>
-          <div class="arch-nodes">
-            <div class="arch-node deploy">
-              <div class="node-title">Vercel</div>
-              <div class="node-tech">静态托管 + Serverless + Edge</div>
-            </div>
-            <div class="arch-node deploy">
-              <div class="node-title">GitHub</div>
-              <div class="node-tech">版本控制 · 公开仓库</div>
-            </div>
-            <div class="arch-node deploy">
-              <div class="node-title">vercel.json</div>
-              <div class="node-tech">framework:null · rewrites</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== Slide 8: Tech Highlights 1 ====== -->
+  <!-- ====== Slide 8: Data Closed Loop ====== -->
   <section class="slide" data-slide="8">
     <div class="slide-inner">
-      <div class="section-label">04 — TECH HIGHLIGHTS</div>
-      <h2 class="slide-title">技术亮点（一）</h2>
-      <p class="slide-desc">区分"调了一次 API"和"做了个 AI Agent"的关键</p>
+      <div class="section-label">07 — DATA CLOSED LOOP</div>
+      <h2 class="slide-title">每个功能都能追溯到用户痛点</h2>
+      <p class="slide-desc">VoiceMap 痛点 → Transit 功能 → Screen 验证</p>
 
-      <div class="highlight-grid">
-        <div class="highlight-card h1">
-          <div class="h-icon">// HIGHLIGHT_01</div>
-          <h3>Agent Loop + Function Calling</h3>
-          <p>
-            Transit 不是单次 API 调用，而是真正的 Agent 循环。
-            AI 自主决定调用什么工具、搜索什么关键词、
-            什么时候停止搜索开始总结。最多 8 轮，每轮都有明确的 tool_call 和 tool_result。
-          </p>
-          <div class="code-snippet">
-<span class="com">// Agent Loop</span>
-<span class="kw">for</span> (<span class="kw">let</span> i = 0; i &lt; 8; i++) {
-  <span class="kw">const</span> res = <span class="kw">await</span> callDeepSeek(messages, tools);
-  <span class="kw">if</span> (res.tool_calls) {
-    <span class="com">// AI 自主决定调用工具</span>
-    <span class="kw">const</span> result = <span class="kw">await</span> executeTool(res.tool_calls);
-    messages.push(result);
-  } <span class="kw">else</span> {
-    <span class="com">// AI 决定停止搜索，输出结果</span>
-    <span class="kw">return</span> res.content;
-  }
-}
-          </div>
-        </div>
+      <table class="pm-table">
+        <thead>
+          <tr>
+            <th style="width: 28%;">用户痛点</th>
+            <th style="width: 30%;">产品功能</th>
+            <th style="width: 42%;">PM 判断</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>不知道做什么项目</td>
+            <td>Transit 3 条路线推荐</td>
+            <td class="evidence">把「JD 要求」翻译成「可执行项目」，降低决策门槛</td>
+          </tr>
+          <tr>
+            <td>简历不知道怎么写</td>
+            <td>Screen 简历诊断</td>
+            <td class="evidence">把抽象的「匹配度」拆成具体缺失项，给出改进方向</td>
+          </tr>
+          <tr>
+            <td>JD 术语看不懂</td>
+            <td>Transit 双输入框 + 路线解读</td>
+            <td class="evidence">分别处理「岗位职责」和「任职要求」，用白话解释术语</td>
+          </tr>
+          <tr>
+            <td>投了很多没回音</td>
+            <td>Screen 匹配度评分</td>
+            <td class="evidence">量化简历与 JD 的匹配程度，帮助用户判断是否值得投</td>
+          </tr>
+          <tr>
+            <td>缺乏实战经验</td>
+            <td>Transit 真实资源引用</td>
+            <td class="evidence">每条路线附带 GitHub 仓库和数据集，用户能直接动手做</td>
+          </tr>
+          <tr>
+            <td>面试被问住</td>
+            <td>路线卡片 + 项目逻辑</td>
+            <td class="evidence">每个项目都有「为什么做」「怎么做」「证明了什么」</td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div class="highlight-card h2">
-          <div class="h-icon">// HIGHLIGHT_02</div>
-          <h3>SSE 流式推送</h3>
-          <p>
-            用户不用等 Agent 跑完才看到结果。每一步思考、工具调用、
-            返回结果都通过 Server-Sent Events 实时推送到前端，
-            体感上"AI 正在思考"。
-          </p>
-          <div class="code-snippet">
-<span class="com">// Edge Function SSE</span>
-<span class="kw">const</span> stream = <span class="kw">new</span> ReadableStream({
-  start(controller) {
-    controller.enqueue(
-      <span class="str">`data: ${JSON.stringify({
-        type: <span class="str">'thinking'</span>,
-        content: <span class="str">'正在分析JD...'</span>
-      })}\n\n`</span>
-    );
-  }
-});
-<span class="kw">return</span> <span class="kw">new</span> Response(stream, {
-  headers: { <span class="str">'Content-Type'</span>: <span class="str">'text/event-stream'</span> }
-});
-          </div>
+      <div style="margin-top: 24px; padding: 18px 24px; background: var(--bg-card); border-radius: var(--radius); border-left: 4px solid var(--l2); box-shadow: var(--shadow-sm);">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 6px;">CLOSED LOOP</div>
+        <div style="font-size: 14px; color: var(--text-primary); line-height: 1.7;">
+          VoiceMap 发现的需求，100% 在 Transit 和 Screen 中找到了产品解法；Screen 的诊断结果又反向驱动用户回到 Transit 生成更匹配的新路线。
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== Slide 9: Tech Highlights 2 ====== -->
+  <!-- ====== Slide 9: MVP Delivery ====== -->
   <section class="slide" data-slide="9">
     <div class="slide-inner">
-      <div class="section-label">04 — TECH HIGHLIGHTS</div>
-      <h2 class="slide-title">技术亮点（二）</h2>
-      <p class="slide-desc">浏览器端解析 + 两阶段 JSON 格式化 + 混合部署</p>
+      <div class="section-label">08 — MVP DELIVERY</div>
+      <h2 class="slide-title">从调研到上线的完整产品流程</h2>
+      <p class="slide-desc">用 MVP 思维快速验证产品价值</p>
 
-      <div class="highlight-grid">
-        <div class="highlight-card h3">
-          <div class="h-icon">// HIGHLIGHT_03</div>
-          <h3>浏览器端文件解析</h3>
-          <p>
-            Screen 的 PDF/DOCX 解析完全在浏览器端完成。
-            pdfjs-dist 用 Web Worker 解析 PDF 文字层，
-            mammoth.js 提取 DOCX 纯文本。
-            文件不上传服务器，保护用户隐私。
-          </p>
-          <div class="code-snippet">
-<span class="com">// 浏览器端 PDF 解析</span>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  <span class="str">'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'</span>;
-
-<span class="kw">const</span> pdf = <span class="kw">await</span> pdfjsLib.getDocument({
-  data: arrayBuffer
-}).promise;
-
-<span class="kw">for</span> (<span class="kw">let</span> i = 1; i &lt;= pdf.numPages; i++) {
-  <span class="kw">const</span> page = <span class="kw">await</span> pdf.getPage(i);
-  <span class="kw">const</span> text = <span class="kw">await</span> page.getTextContent();
-  fullText += text.items.map(t =&gt; t.str).join(<span class="str">' '</span>);
-}
-          </div>
+      <div class="loop-diagram" style="margin-bottom: 28px;">
+        <div class="loop-node" style="border-top: 3px solid var(--l4);">
+          <div class="loop-title">Day 1-2</div>
+          <div class="loop-desc">用户调研</div>
         </div>
-
-        <div class="highlight-card h4">
-          <div class="h-icon">// HIGHLIGHT_04</div>
-          <h3>两阶段 JSON 格式化</h3>
-          <p>
-            先让 Agent 自由思考生成自然语言总结（高 temperature），
-            再用低 temperature（0.3）格式化为严格 JSON。
-            兼顾创造性和结构化，解析失败时自动发起修复请求。
-          </p>
-          <div class="code-snippet">
-<span class="com">// Phase 1: 自由思考</span>
-<span class="kw">const</span> summary = <span class="kw">await</span> callDeepSeek({
-  temperature: 0.8,
-  prompt: <span class="str">'根据JD推荐3个项目...'</span>
-});
-
-<span class="com">// Phase 2: 严格格式化</span>
-<span class="kw">const</span> json = <span class="kw">await</span> callDeepSeek({
-  temperature: 0.3,
-  prompt: <span class="str">'将以下内容转为严格JSON...'</span>,
-  input: summary
-});
-          </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l1);">
+          <div class="loop-title">Day 3-4</div>
+          <div class="loop-desc">产品方案</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l3);">
+          <div class="loop-title">Day 5-7</div>
+          <div class="loop-desc">MVP 开发</div>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node" style="border-top: 3px solid var(--l2);">
+          <div class="loop-title">Day 8</div>
+          <div class="loop-desc">Vercel 上线</div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ====== Slide 10: Results ====== -->
-  <section class="slide" data-slide="10">
-    <div class="slide-inner">
-      <div class="section-label">05 — PROJECT RESULTS</div>
-      <h2 class="slide-title">项目成果</h2>
-      <p class="slide-desc">已部署上线，可直接访问</p>
 
       <div class="result-grid">
         <div class="result-card">
           <div class="r-icon" style="background: rgba(62,95,204,0.1); color: var(--l4);">🌐</div>
           <div class="r-info">
-            <h4>线上访问</h4>
-            <p>三个页面均已部署到 Vercel，可在线访问</p>
+            <h4>线上可访问</h4>
+            <p>三个产品模块 + PPT 全部部署到 Vercel</p>
             <div class="link">ai-pm-portfolio-fcg7e5e1z-secret22.vercel.app</div>
           </div>
         </div>
@@ -1449,8 +1450,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         <div class="result-card">
           <div class="r-icon" style="background: rgba(29,143,128,0.1); color: var(--l2);">📦</div>
           <div class="r-info">
-            <h4>开源仓库</h4>
-            <p>代码已公开在 GitHub，含完整提交历史</p>
+            <h4>开源可验证</h4>
+            <p>代码和提交历史公开在 GitHub</p>
             <div class="link">github.com/zhuxianglin1021-commits/ai-pm-portfolio</div>
           </div>
         </div>
@@ -1458,8 +1459,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         <div class="result-card">
           <div class="r-icon" style="background: rgba(225,90,66,0.1); color: var(--l1);">🤖</div>
           <div class="r-info">
-            <h4>AI 功能在线可用</h4>
-            <p>DeepSeek API 已配置，Agent 和诊断功能均可正常调用</p>
+            <h4>AI 功能在线</h4>
+            <p>DeepSeek API 已接入，Agent 和诊断均可用</p>
             <div class="link">/api/status → {"configured": true}</div>
           </div>
         </div>
@@ -1467,22 +1468,63 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         <div class="result-card">
           <div class="r-icon" style="background: rgba(138,95,191,0.1); color: var(--l5);">🔒</div>
           <div class="r-info">
-            <h4>安全实践</h4>
-            <p>API Key 通过 Vercel 环境变量管理，不硬编码在代码中</p>
+            <h4>安全合规</h4>
+            <p>API Key 通过环境变量管理，不硬编码</p>
             <div class="link">process.env.DEEPSEEK_API_KEY</div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div style="margin-top: 24px; padding: 20px 28px; background: var(--bg-card); border-radius: var(--radius); border-left: 4px solid var(--l2); box-shadow: var(--shadow-sm);">
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px;">DELIVERABLES</div>
-        <div style="font-size: 14px; color: var(--text-primary); line-height: 1.8;">
-          ✅ VoiceMap 用户口碑洞察报告（22 条样本 · 6 大痛点）<br>
-          ✅ Transit AI Agent 路线图生成器（Agent Loop + Function Calling + SSE）<br>
-          ✅ Screen 简历 X 光机（浏览器端 PDF/DOCX 解析 + AI 诊断）<br>
-          ✅ Vercel 在线部署 + GitHub 开源 + API 环境变量安全管理
-        </div>
-      </div>
+  <!-- ====== Slide 10: PM Capability Summary ====== -->
+  <section class="slide" data-slide="10">
+    <div class="slide-inner">
+      <div class="section-label">09 — PM CAPABILITIES</div>
+      <h2 class="slide-title">这个项目体现了哪些 PM 能力</h2>
+      <p class="slide-desc">把作品集的每个模块与 AI PM 岗位要求对齐</p>
+
+      <table class="pm-table">
+        <thead>
+          <tr>
+            <th style="width: 24%;">PM 能力</th>
+            <th style="width: 32%;">证据</th>
+            <th style="width: 44%;">具体说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>用户研究</td>
+            <td class="evidence">VoiceMap 22 条真实样本 + AI 聚类</td>
+            <td class="evidence">会设计调研方案、采集用户声音、提炼可量化的需求优先级</td>
+          </tr>
+          <tr>
+            <td>需求分析</td>
+            <td class="evidence">6 大痛点 → 功能映射表</td>
+            <td class="evidence">能把模糊的「求职难」拆成具体场景，并找到产品解法</td>
+          </tr>
+          <tr>
+            <td>产品规划</td>
+            <td class="evidence">三模块闭环架构</td>
+            <td class="evidence">知道什么时候做洞察、什么时候做方案、什么时候做验证</td>
+          </tr>
+          <tr>
+            <td>AI 产品判断力</td>
+            <td class="evidence">Agent Loop + Function Calling 方案</td>
+            <td class="evidence">理解大模型能力边界，用 Agent + 真实搜索解决幻觉问题</td>
+          </tr>
+          <tr>
+            <td>用户体验设计</td>
+            <td class="evidence">地铁线、双输入框、三色信号灯</td>
+            <td class="evidence">关注信息分层和认知负荷，用视觉符号降低理解成本</td>
+          </tr>
+          <tr>
+            <td>快速落地</td>
+            <td class="evidence">MVP 8 天上线</td>
+            <td class="evidence">能从 0 到 1 完成调研、设计、开发、部署全流程</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -1494,9 +1536,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         THANK YOU
       </div>
       <h1>从洞察到落地<br>用 AI 重新定义求职准备</h1>
-      <p class="subtitle" style="font-size: 16px; color: var(--text-secondary); max-width: 480px; margin: 0 auto;">
-        VoiceMap · Transit · Screen —— 三个模块，一个闭环<br>
-        AI Agent 不是概念，是正在运行的产品
+      <p class="subtitle" style="font-size: 16px; color: var(--text-secondary); max-width: 520px; margin: 0 auto;">
+        AI 产品经理求职作品集 · 用户洞察 × 智能规划 × 简历诊断<br>
+        在线可体验，源码可查看
       </p>
       <div class="links">
         <a href="https://ai-pm-portfolio-fcg7e5e1z-secret22.vercel.app/" target="_blank" class="end-link primary">
@@ -1532,7 +1574,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   const slides = document.querySelectorAll('.slide');
   const dotsContainer = document.getElementById('progressDots');
 
-  // Create progress dots
   for (let i = 1; i <= totalSlides; i++) {
     const dot = document.createElement('div');
     dot.className = 'dot-item' + (i === 1 ? ' active' : '');
@@ -1567,7 +1608,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     updateUI();
   }
 
-  // Keyboard navigation
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === ' ') {
       e.preventDefault();
@@ -1578,7 +1618,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     }
   });
 
-  // Touch / swipe support
   let touchStartX = 0;
   document.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
