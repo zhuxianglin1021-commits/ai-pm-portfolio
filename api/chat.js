@@ -5,7 +5,7 @@
  * 环境变量：DEEPSEEK_API_KEY
  */
 const API_BASE_URL = 'https://api.deepseek.com/v1';
-const API_MODEL = 'deepseek-chat';
+const API_MODEL = 'deepseek-v4-flash';
 
 module.exports = async (req, res) => {
   // CORS

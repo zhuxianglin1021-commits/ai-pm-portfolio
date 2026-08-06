@@ -8,7 +8,7 @@
 export const config = { runtime: 'edge' };
 
 const API_BASE_URL = 'https://api.deepseek.com/v1';
-const API_MODEL = 'deepseek-chat';
+const API_MODEL = 'deepseek-v4-flash';
 const MAX_AGENT_ITERATIONS = 8;
 
 // ====== Agent 提示词 ======
