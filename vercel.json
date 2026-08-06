@@ -1,16 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "screen.html", "use": "@vercel/static" },
-    { "src": "voicemap.html", "use": "@vercel/static" },
-    { "src": "api/chat.js", "use": "@vercel/node" },
-    { "src": "api/status.js", "use": "@vercel/node" },
-    { "src": "api/agent.js", "use": "@vercel/edge" }
-  ],
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/screen", "dest": "/screen.html" },
-    { "src": "/voicemap", "dest": "/voicemap.html" }
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/screen", "destination": "/screen.html" },
+    { "source": "/voicemap", "destination": "/voicemap.html" }
   ]
 }
