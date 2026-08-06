@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/screen", "destination": "/screen.html" },
-    { "source": "/voicemap", "destination": "/voicemap.html" }
+    { "source": "/voicemap", "destination": "/voicemap.html" },
+    { "source": "/presentation", "destination": "/presentation.html" }
   ]
 }
