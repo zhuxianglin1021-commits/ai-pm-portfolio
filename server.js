@@ -18,10 +18,16 @@ try { ({ PDFParse } = require('pdf-parse')); } catch(e) { console.log('  ⚠️ 
 try { mammoth = require('mammoth'); } catch(e) { console.log('  ⚠️ mammoth 未安装，简历上传(Word)不可用'); }
 
 // ====== 在这里填写你的 API 配置 ======
+// 本地运行时，在终端使用：set DEEPSEEK_API_KEY=你的key（Windows）或 export DEEPSEEK_API_KEY=你的key（Mac/Linux）
 const API_BASE_URL = 'https://api.deepseek.com/v1';
-const API_KEY = 'sk-e96ba2328f9e45c89c02bf3e7777819c';
+const API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const API_MODEL  = 'deepseek-v4-flash';
 // ====================================
+
+if (!API_KEY) {
+  console.log('\n  ⚠️  警告：未设置 DEEPSEEK_API_KEY 环境变量');
+  console.log('       AI 功能将无法使用，但页面仍可正常展示。\n');
+}
 
 const PORT = 3000;
 const MAX_AGENT_ITERATIONS = 8;
