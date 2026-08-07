@@ -1235,8 +1235,8 @@
             </tr>
             <tr>
               <td><strong>v2.0</strong></td>
-              <td>全流程闭环</td>
-              <td>路线图 → 项目执行跟踪 → 简历自动生成 → 面试准备卡片。从"告诉你做什么"到"陪你做完"</td>
+              <td>职业方向输入 + 项目执行包</td>
+              <td>双模式架构（探索模式 + 精准模式）· 职业方向输入替代 JD 粘贴为默认入口 · 聚合能力画像 · 项目原型库 · 三步匹配算法 · 项目执行包</td>
               <td><span class="tag tag-p3">待规划</span></td>
             </tr>
           </tbody>
@@ -1244,7 +1244,58 @@
       </div>
 
       <div class="callout">
-        <strong>v2.0 愿景：</strong>Transit 最终要成为一个"求职项目教练"——不只是生成路线图，而是陪伴用户从"看到 JD"到"拿着做完的项目去面试"的全流程。每个项目有进度跟踪、完成验证、简历段落自动生成、面试话术建议。
+        <strong>v2.0 愿景：</strong>从"基于单条 JD 的项目建议"深化为"基于职业方向的项目建议 + 执行包"。V1 保留为精准模式（高级功能），V2 探索模式成为默认入口。用户在还没找到岗位时就能开始准备。
+      </div>
+
+      <!-- V2.0 功能清单 -->
+      <div style="margin-top: 32px;">
+        <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">V2.0 功能清单</h3>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th style="width: 70px;">优先级</th><th style="width: 160px;">功能</th><th>V1 现状</th><th>V2 变化</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-p0">P0</span></td>
+                <td><strong>职业方向输入</strong></td>
+                <td>必须粘贴 JD（岗位职责 + 任职要求）</td>
+                <td>输入"AI产品经理"即可，不用先找到具体岗位。降低使用门槛，覆盖迷茫期用户</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-p0">P0</span></td>
+                <td><strong>项目执行包</strong></td>
+                <td>项目建议含名称/做法/参考资源/时间（7字段）</td>
+                <td>额外加分步指南（Week 1/Week 2）、推荐工具栈、简历描述模板、作品集展示模板</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><strong>聚合能力画像</strong></td>
+                <td>基于单条 JD 提取能力，可能偏差</td>
+                <td>预聚合 100+ 同类 JD，统计每个能力的出现频率和权重。用户输入职业时直接查表</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><strong>项目原型库</strong></td>
+                <td>Agent 实时搜 GitHub 即兴生成，质量看运气</td>
+                <td>人工维护 10-15 个结构化项目模板，AI 从精选库中打分匹配 Top 3，保证推荐质量</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><strong>三步匹配算法</strong></td>
+                <td>从 JD 提 3 个能力，各推 1 个项目，无多样性约束</td>
+                <td>技能覆盖度(50%) + 差异化分(30%) + 可行性(20%) 打分，强制 3 个项目分属核心/差异化/全链路三类</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><strong>双模式共存</strong></td>
+                <td>单一入口（粘贴 JD）</td>
+                <td>V2 探索模式（输入职业）为默认入口，V1 精准模式（粘贴 JD）保留为高级功能</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
