@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transit · 产品需求文档 PRD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ====== Design Tokens (与作品集统一) ====== */
+    :root {
+      --bg: #EEF0EC;
+      --bg-card: #FFFFFF;
+      --bg-soft: #F6F7F4;
+      --text-primary: #1A2330;
+      --text-secondary: #6B7585;
+      --text-tertiary: #A0A8B4;
+      --border: #E2E5E1;
+      --border-strong: #C7CBD1;
+
+      --l1: #E15A42;
+      --l2: #1D8F80;
+      --l3: #E5A23A;
+      --l4: #3E5FCC;
+      --l5: #8A5FBF;
+
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 1px 3px rgba(26,35,48,0.05), 0 1px 2px rgba(26,35,48,0.03);
+      --shadow: 0 4px 6px -1px rgba(26,35,48,0.05), 0 2px 4px -1px rgba(26,35,48,0.03), 0 0 0 1px rgba(26,35,48,0.02);
+      --shadow-lg: 0 20px 40px -8px rgba(26,35,48,0.12), 0 8px 16px -4px rgba(26,35,48,0.06);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      line-height: 1.7;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 900px 500px at 50% -80px, rgba(62,95,204,0.05), transparent),
+        radial-gradient(circle at 1px 1px, rgba(26,35,48,0.022) 1px, transparent 0);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ====== Layout ====== */
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+    /* ====== Project Nav ====== */
+    .project-nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 920px; margin: 0 auto; padding: 0 24px;
+      display: flex; gap: 4px; height: 44px; align-items: center;
+    }
+    .nav-item {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 6px 14px; font-size: 13px; font-weight: 500;
+      font-family: var(--font-display); color: var(--text-secondary);
+      text-decoration: none; border-radius: 100px; transition: 0.3s;
+    }
+    .nav-item:hover { background: rgba(26,35,48,0.04); color: var(--text-primary); }
+    .nav-item.active { background: var(--text-primary); color: #fff; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ====== TOC Sidebar ====== */
+    .toc {
+      position: fixed; top: 60px; left: 24px;
+      width: 200px; max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      font-size: 12px; line-height: 2;
+      padding: 16px 0;
+    }
+    .toc-title {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text-tertiary); margin-bottom: 8px; padding-left: 12px;
+    }
+    .toc a {
+      display: block; color: var(--text-secondary);
+      text-decoration: none; padding: 3px 12px;
+      border-left: 2px solid transparent; transition: 0.2s;
+      border-radius: 0 4px 4px 0;
+    }
+    .toc a:hover { color: var(--text-primary); background: rgba(255,255,255,0.6); }
+    .toc a.active { color: var(--l1); border-left-color: var(--l1); font-weight: 600; }
+    @media (max-width: 1280px) { .toc { display: none; } }
+
+    /* ====== Hero ====== */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 48px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 6px 16px; margin-bottom: 24px;
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--l1); animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-family: var(--font-display); font-size: 48px; font-weight: 700;
+      letter-spacing: -2px; line-height: 1.1; margin-bottom: 12px;
+      background: linear-gradient(135deg, #1A2330 0%, #2A3B5C 45%, #3E5FCC 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 16px; color: var(--text-secondary);
+      max-width: 520px; margin: 0 auto; line-height: 1.75;
+    }
+    .hero-meta {
+      display: flex; justify-content: center; gap: 32px;
+      margin-top: 28px; flex-wrap: wrap;
+    }
+    .hero-meta-item { text-align: center; }
+    .hero-meta-label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text-tertiary); margin-bottom: 4px;
+    }
+    .hero-meta-value {
+      font-family: var(--font-display); font-size: 14px;
+      font-weight: 600; color: var(--text-primary);
+    }
+
+    /* ====== Section ====== */
+    .section {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-tertiary); margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: 28px; font-weight: 600;
+      letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 15px; color: var(--text-secondary);
+      line-height: 1.8; margin-bottom: 24px;
+    }
+    p { font-size: 15px; color: var(--text-secondary); line-height: 1.8; }
+    p strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ====== Card ====== */
+    .card {
+      background: var(--bg-card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 28px; margin-bottom: 20px;
+    }
+    .card-title {
+      font-family: var(--font-display); font-size: 17px; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .badge {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; color: #fff;
+    }
+
+    /* ====== Table ====== */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px; line-height: 1.6;
+    }
+    th {
+      text-align: left; font-family: var(--font-display); font-weight: 600;
+      font-size: 12px; color: var(--text-tertiary);
+      padding: 10px 14px; border-bottom: 2px solid var(--border);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    td {
+      padding: 12px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary); vertical-align: top;
+    }
+    td strong { color: var(--text-primary); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-soft); }
+
+    /* ====== Persona ====== */
+    .persona-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;
+    }
+    .persona-card {
+      background: var(--bg-card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px; position: relative; overflow: hidden;
+    }
+    .persona-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .persona-card.p1::before { background: var(--l1); }
+    .persona-card.p2::before { background: var(--l4); }
+    .persona-name {
+      font-family: var(--font-display); font-size: 16px; font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .persona-tag {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--text-tertiary); margin-bottom: 12px;
+    }
+    .persona-quote {
+      font-size: 14px; color: var(--text-primary); line-height: 1.7;
+      font-style: italic; padding: 12px 16px;
+      background: var(--bg-soft); border-radius: 8px; margin-bottom: 12px;
+    }
+    .persona-pain {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+    }
+    .persona-pain li { margin-bottom: 4px; }
+    @media (max-width: 640px) { .persona-grid { grid-template-columns: 1fr; } }
+
+    /* ====== Flow ====== */
+    .flow {
+      display: flex; align-items: stretch; gap: 0; margin: 24px 0; flex-wrap: wrap;
+    }
+    .flow-step {
+      flex: 1; min-width: 140px;
+      background: var(--bg-card); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 20px 16px;
+      text-align: center; position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: '\203A'; position: absolute; right: -10px; top: 50%;
+      transform: translateY(-50%); font-size: 20px; color: var(--border-strong);
+      z-index: 1;
+    }
+    .flow-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin: 0 auto 10px;
+    }
+    .flow-title {
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .flow-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+    @media (max-width: 640px) {
+      .flow { flex-direction: column; gap: 12px; }
+      .flow-step:not(:last-child)::after { display: none; }
+    }
+
+    /* ====== Metric Card ====== */
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0;
+    }
+    .metric-card {
+      background: var(--bg-card); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 20px; text-align: center;
+    }
+    .metric-num {
+      font-family: var(--font-display); font-size: 32px; font-weight: 700;
+      letter-spacing: -1px; margin-bottom: 4px;
+    }
+    .metric-label {
+      font-size: 12px; color: var(--text-tertiary);
+      letter-spacing: 0.3px;
+    }
+    @media (max-width: 640px) { .metric-grid { grid-template-columns: 1fr; } }
+
+    /* ====== Feature List ====== */
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li {
+      display: flex; gap: 12px; padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-num {
+      width: 24px; height: 24px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+    .feature-body { flex: 1; }
+    .feature-body strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; }
+    .feature-body span { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ====== Priority Tags ====== */
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px;
+    }
+    .tag-p0 { background: rgba(225,90,66,0.1); color: var(--l1); }
+    .tag-p1 { background: rgba(229,162,58,0.1); color: var(--l3); }
+    .tag-p2 { background: rgba(62,95,204,0.1); color: var(--l4); }
+    .tag-p3 { background: rgba(107,117,133,0.1); color: var(--text-secondary); }
+
+    /* ====== Code Block ====== */
+    .code-block {
+      background: #1A2330; border-radius: var(--radius-sm);
+      padding: 16px 20px; margin: 16px 0; overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: var(--font-mono); font-size: 12px;
+      line-height: 1.7; color: #C7CBD1;
+    }
+    .code-block .kw { color: #8A5FBF; }
+    .code-block .str { color: #1D8F80; }
+    .code-block .com { color: #6B7585; }
+
+    /* ====== Arch Diagram ====== */
+    .arch-diagram {
+      display: flex; flex-direction: column; gap: 8px; margin: 20px 0;
+    }
+    .arch-layer {
+      background: var(--bg-card); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm); padding: 16px 20px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .arch-layer-name {
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      min-width: 100px; flex-shrink: 0;
+    }
+    .arch-layer-desc { font-size: 12px; color: var(--text-secondary); flex: 1; }
+    .arch-arrow {
+      text-align: center; font-size: 16px; color: var(--border-strong);
+      line-height: 1;
+    }
+
+    /* ====== Callout ====== */
+    .callout {
+      background: rgba(62,95,204,0.05);
+      border-left: 3px solid var(--l4);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 18px; margin: 16px 0;
+      font-size: 14px; color: var(--text-secondary); line-height: 1.7;
+    }
+    .callout strong { color: var(--l4); }
+
+    .callout-warn {
+      background: rgba(229,162,58,0.05);
+      border-left-color: var(--l3);
+    }
+    .callout-warn strong { color: var(--l3); }
+
+    /* ====== Footer ====== */
+    footer {
+      text-align: center; padding: 40px 24px;
+      border-top: 1px solid var(--border);
+    }
+    footer p { font-size: 13px; color: var(--text-tertiary); }
+    footer p strong { font-family: var(--font-display); font-weight: 600; color: var(--text-secondary); }
+
+    /* ====== Print ====== */
+    @media print {
+      .project-nav, .toc { display: none; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== Project Nav ====== -->
+  <nav class="project-nav">
+    <div class="nav-inner">
+      <a href="/voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
+      <a href="/index.html" class="nav-item"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
+      <a href="/screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
+      <a href="/prd.html" class="nav-item active"><span class="nav-dot" style="background:var(--l5)"></span>PRD</a>
+    </div>
+  </nav>
+
+  <!-- ====== TOC ====== -->
+  <nav class="toc" id="toc">
+    <div class="toc-title">CONTENTS</div>
+    <a href="#sec-1" class="toc-link">1. 文档信息</a>
+    <a href="#sec-2" class="toc-link">2. 产品概述</a>
+    <a href="#sec-3" class="toc-link">3. 背景与问题</a>
+    <a href="#sec-4" class="toc-link">4. 目标用户</a>
+    <a href="#sec-5" class="toc-link">5. 产品目标</a>
+    <a href="#sec-6" class="toc-link">6. 功能需求</a>
+    <a href="#sec-7" class="toc-link">7. 用户流程</a>
+    <a href="#sec-8" class="toc-link">8. 技术架构</a>
+    <a href="#sec-9" class="toc-link">9. 交互设计</a>
+    <a href="#sec-10" class="toc-link">10. 数据定义</a>
+    <a href="#sec-11" class="toc-link">11. 非功能需求</a>
+    <a href="#sec-12" class="toc-link">12. 迭代规划</a>
+    <a href="#sec-13" class="toc-link">13. 风险与对策</a>
+  </nav>
+
+  <!-- ====== Hero ====== -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Product Requirements Document
+      </div>
+      <h1>Transit PRD</h1>
+      <p class="subtitle">把招聘 JD 拆成应届生今天就走得通的项目路线图<br>每个能力点都是一站，每站都有可动手的项目</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">VERSION</div>
+          <div class="hero-meta-value">v1.0</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">DATE</div>
+          <div class="hero-meta-value">2026.08</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">STATUS</div>
+          <div class="hero-meta-value">已上线 (MVP)</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">OWNER</div>
+          <div class="hero-meta-value">朱翔林</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====== 1. 文档信息 ====== -->
+    <section class="section" id="sec-1">
+      <div class="section-label">01 — DOCUMENT INFO</div>
+      <h2 class="section-title">文档信息</h2>
+
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td style="width:140px;"><strong>产品名称</strong></td><td>Transit — JD 路线图生成器</td></tr>
+            <tr><td><strong>文档版本</strong></td><td>v1.0（MVP 已上线版本）</td></tr>
+            <tr><td><strong>撰写日期</strong></td><td>2026 年 8 月</td></tr>
+            <tr><td><strong>产品负责人</strong></td><td>朱翔林</td></tr>
+            <tr><td><strong>文档状态</strong></td><td>已评审 / 开发完成 / 已部署</td></tr>
+            <tr><td><strong>相关文档</strong></td><td>VoiceMap 用户研究报告（108 条样本 / 七大痛点聚类）</td></tr>
+            <tr><td><strong>线上地址</strong></td><td>ai-pm-portfolio.vercel.app</td></tr>
+            <tr><td><strong>代码仓库</strong></td><td>github.com/zhuxianglin1021-commits/ai-pm-portfolio</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>修订记录：</strong>v1.0 基于 VoiceMap 用户研究结论定型，覆盖 MVP 全部功能。后续迭代计划见第 12 节。
+      </div>
+    </section>
+
+    <!-- ====== 2. 产品概述 ====== -->
+    <section class="section" id="sec-2">
+      <div class="section-label">02 — PRODUCT OVERVIEW</div>
+      <h2 class="section-title">产品概述</h2>
+
+      <p>Transit 是一款面向应届生求职者的 <strong>AI Agent 产品</strong>。用户粘贴目标岗位的招聘 JD（岗位职责 + 任职要求），AI Agent 自动完成以下工作：</p>
+
+      <ol style="margin: 12px 0 12px 24px; color: var(--text-secondary); line-height: 2;">
+        <li><strong>JD 拆解</strong>：从任职要求中提取 3 个最核心的能力维度</li>
+        <li><strong>资源搜索</strong>：调用 GitHub Search API 和 HuggingFace API，搜索与每个能力点匹配的真实开源项目和公开数据集</li>
+        <li><strong>项目生成</strong>：基于搜索到的真实资源，生成具体到"今天就能写第一行代码"的作品集项目建议</li>
+        <li><strong>路线可视化</strong>：以地铁线路图的形式呈现 3 条能力路线，每条路线包含 JD 原文依据、项目名称、具体做法、证明逻辑、参考资源、预估耗时</li>
+      </ol>
+
+      <div class="callout">
+        <strong>核心价值主张：</strong>把 JD 从"看不懂的门槛"变成"走得通的路线图"。不是告诉用户"你需要学数据分析"，而是告诉用户"用这个 Kaggle 数据集 + 这个 GitHub 项目，2 天内做出一份带运营建议的分析报告"。
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">产品定位</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td style="width:120px;"><strong>用户群</strong></td><td>应届生 / 零项目经验的求职者</td></tr>
+            <tr><td><strong>使用场景</strong></td><td>看到心仪岗位 JD → 不知道怎么准备 → 粘贴 JD → 获得可执行方案</td></tr>
+            <tr><td><strong>核心动作</strong></td><td>粘贴 JD → 生成路线 → 复制项目卡片 → 开始动手</td></tr>
+            <tr><td><strong>替代方案</strong></td><td>手动搜索"怎么准备XX面试" → 碎片化信息 → 无从下手</td></tr>
+            <tr><td><strong>差异化</strong></td><td>不是"AI 帮你写简历"，而是"AI 帮你做简历上该写的内容"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 3. 背景与问题 ====== -->
+    <section class="section" id="sec-3">
+      <div class="section-label">03 — BACKGROUND & PROBLEM</div>
+      <h2 class="section-title">背景与问题定义</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">3.1 用户研究基础</h3>
+      <p>本产品的需求来源于 VoiceMap 模块的真实用户声音采集。通过 WebSearch + WebFetch 从<strong>牛客网、知乎、V2EX、小红书</strong>四个平台采集了 <strong>108 条</strong>真实求职者发言，经 AI 主题聚类归纳为 7 大痛点：</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>痛点类别</th>
+              <th>提及量</th>
+              <th>占比</th>
+              <th>与 Transit 的关系</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><strong>投递无反馈 / 石沉大海</strong></td><td>23</td><td>21.3%</td><td>间接 — 通过提升简历竞争力改善投递转化率</td></tr>
+            <tr><td>2</td><td><strong>简历质量差 / 与 JD 不匹配</strong></td><td>19</td><td>17.6%</td><td style="color: var(--l1);"><strong>直接 — Transit 的核心切入点</strong></td></tr>
+            <tr><td>3</td><td><strong>求职焦虑 / 心态崩溃</strong></td><td>17</td><td>15.7%</td><td>间接 — 可执行路线降低"不知道做什么"的焦虑</td></tr>
+            <tr><td>4</td><td><strong>面试表现差 / 准备不足</strong></td><td>16</td><td>14.8%</td><td>间接 — 做完项目即面试素材</td></tr>
+            <tr><td>5</td><td><strong>缺少实习 / 项目经历</strong></td><td>15</td><td>13.9%</td><td style="color: var(--l1);"><strong>直接 — Transit 生成的就是项目经历</strong></td></tr>
+            <tr><td>6</td><td><strong>学历门槛 / 双非困境</strong></td><td>10</td><td>9.3%</td><td>间接 — 用作品集弥补学历短板</td></tr>
+            <tr><td>7</td><td><strong>信息差 / 求职渠道单一</strong></td><td>8</td><td>7.4%</td><td style="color: var(--l1);"><strong>直接 — Transit 从 JD 倒推能力需求，消除信息差</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Transit 直接命中 <strong>3 个核心痛点</strong>（#2 简历与 JD 不匹配、#5 缺少项目经历、#7 信息差），间接覆盖另外 4 个。</p>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">3.2 问题定义</h3>
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l1);">PROBLEM</span>
+          核心问题
+        </div>
+        <p>应届生看到心仪岗位的 JD 时，面临三重困境：</p>
+        <ol style="margin: 8px 0 0 20px; color: var(--text-secondary); line-height: 2;">
+          <li><strong>看不懂</strong>：JD 里写的"具备数据分析能力""熟悉大模型原理"——不知道具体要做到什么程度</li>
+          <li><strong>做不到</strong>：知道要学什么，但不知道从哪开始、用什么资源、做什么项目</li>
+          <li><strong>证不了</strong>：学了东西，但没法在简历和面试中证明"我确实会"</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l2);">INSIGHT</span>
+          产品洞察
+        </div>
+        <p>现有求职工具（简历优化、面试题库、AI 模拟面试）都在解决"怎么包装自己"，但没有人解决"包装的东西从哪来"。应届生缺的不是简历模板，而是<strong>简历上该写的内容本身</strong>——真实的项目经历。</p>
+        <p style="margin-top: 8px;">Transit 的切入点：不帮用户写简历，而是帮用户<strong>做出简历上该写的项目</strong>。每个项目都与 JD 一一对应，做完即可直接写入简历。</p>
+      </div>
+    </section>
+
+    <!-- ====== 4. 目标用户 ====== -->
+    <section class="section" id="sec-4">
+      <div class="section-label">04 — TARGET USERS</div>
+      <h2 class="section-title">目标用户</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">4.1 用户画像</h3>
+
+      <div class="persona-grid">
+        <div class="persona-card p1">
+          <div class="persona-name">小李</div>
+          <div class="persona-tag">985 计算机本科 · 秋招应届生</div>
+          <div class="persona-quote">"JD 上写'有 AI 产品实操经验优先'，我课设做过一个 ChatGPT 套壳，但不知道这算不算'实操经验'。到底要做到什么程度才能写进简历？"</div>
+          <ul class="persona-pain">
+            <li>• 看得懂 JD 字面意思，但不知道"能力要求"的隐性标准</li>
+            <li>• 有零散项目经验，但不知道哪些值得写、怎么对标 JD</li>
+            <li>• 需要明确的"做到这个程度就够了"的判断标准</li>
+          </ul>
+        </div>
+        <div class="persona-card p2">
+          <div class="persona-name">小王</div>
+          <div class="persona-tag">双非硕士 · 转行求职 AI 产品岗</div>
+          <div class="persona-quote">"投了 200 份简历 0 offer。简历上除了毕业论文什么都没有。不是不想做项目，是真的不知道做什么项目能对上 JD。"</div>
+          <ul class="persona-pain">
+            <li>• 零项目经验，不知道从哪开始</li>
+            <li>• 网上搜"产品经理项目"得到一堆付费课程，无法判断质量</li>
+            <li>• 需要具体的、有参考资源的、能立刻动手的方案</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">4.2 用户特征总结</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td style="width:140px;"><strong>学历</strong></td><td>本科及以上，计算机或非计算机专业均有</td></tr>
+            <tr><td><strong>经验水平</strong></td><td>零项目经验 ~ 有课设级项目，无真实业务项目</td></tr>
+            <tr><td><strong>求职阶段</strong></td><td>秋招 / 春招 / 日常实习投递中</td></tr>
+            <tr><td><strong>技术能力</strong></td><td>能写基础代码（Python / SQL），但不熟练独立做项目</td></tr>
+            <tr><td><strong>核心诉求</strong></td><td>不是"学什么"，而是"做什么"——需要具体到可执行的项目方案</td></tr>
+            <tr><td><strong>使用频率</strong></td><td>每次投递新岗位时使用（每周 2-5 次）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 5. 产品目标 ====== -->
+    <section class="section" id="sec-5">
+      <div class="section-label">05 — PRODUCT GOALS</div>
+      <h2 class="section-title">产品目标与成功指标</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">5.1 北极星指标</h3>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-num" style="color: var(--l1);">≥60%</div>
+          <div class="metric-label">路线图完成率<br>（用户实际做完 ≥1 个项目）</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num" style="color: var(--l4);">≥40%</div>
+          <div class="metric-label">卡片复制率<br>（用户复制项目方案到剪贴板）</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num" style="color: var(--l2);">≥70%</div>
+          <div class="metric-label">Agent 成功率<br>（生成有效结果 / 总请求）</div>
+        </div>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">5.2 目标拆解</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>目标层级</th><th>目标描述</th><th>衡量指标</th><th>优先级</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>用户价值</strong></td>
+              <td>用户拿到路线图后知道"今天该做什么"</td>
+              <td>路线图生成后 7 日内回访率 ≥ 30%</td>
+              <td><span class="tag tag-p0">P0</span></td>
+            </tr>
+            <tr>
+              <td><strong>产品体验</strong></td>
+              <td>从粘贴 JD 到看到路线图 ≤ 30 秒</td>
+              <td>P90 响应时间 ≤ 30s</td>
+              <td><span class="tag tag-p0">P0</span></td>
+            </tr>
+            <tr>
+              <td><strong>内容质量</strong></td>
+              <td>生成的项目建议具体、可执行、有参考资源</td>
+              <td>用户"复制"操作率 ≥ 40%</td>
+              <td><span class="tag tag-p0">P0</span></td>
+            </tr>
+            <tr>
+              <td><strong>系统稳定</strong></td>
+              <td>Agent 生成成功率 ≥ 70%（含容错降级）</td>
+              <td>成功率统计（含 Demo 降级）</td>
+              <td><span class="tag tag-p1">P1</span></td>
+            </tr>
+            <tr>
+              <td><strong>可扩展性</strong></td>
+              <td>支持任意岗位 JD 输入，不限于特定行业</td>
+              <td>覆盖 ≥ 5 个不同岗位类型测试</td>
+              <td><span class="tag tag-p2">P2</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 6. 功能需求 ====== -->
+    <section class="section" id="sec-6">
+      <div class="section-label">06 — FUNCTIONAL REQUIREMENTS</div>
+      <h2 class="section-title">功能需求</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">6.1 功能总览</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>编号</th><th>功能模块</th><th>描述</th><th>优先级</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>F-01</td><td><strong>JD 双输入框</strong></td><td>岗位职责 / 任职要求分开输入</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-02</td><td><strong>Agent 自动分析</strong></td><td>AI 拆解 JD → 提取 3 个能力维度</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-03</td><td><strong>GitHub 资源搜索</strong></td><td>为每个能力点搜索真实开源项目</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-04</td><td><strong>数据集搜索</strong></td><td>为数据分析类能力点搜索公开数据集</td><td><span class="tag tag-p1">P1</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-05</td><td><strong>项目卡片生成</strong></td><td>输出 3 条结构化项目建议</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-06</td><td><strong>地铁线可视化</strong></td><td>以地铁线路图呈现路线</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-07</td><td><strong>Agent 思考过程展示</strong></td><td>SSE 流式展示 Agent 推理步骤</td><td><span class="tag tag-p1">P1</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-08</td><td><strong>卡片复制功能</strong></td><td>一键复制项目方案到剪贴板</td><td><span class="tag tag-p1">P1</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-09</td><td><strong>Demo 模式</strong></td><td>无 API 时展示预置示例数据</td><td><span class="tag tag-p1">P1</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-10</td><td><strong>示例 JD 加载</strong></td><td>一键填充示例 JD 供体验</td><td><span class="tag tag-p2">P2</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-11</td><td><strong>错误处理与重试</strong></td><td>网络错误降级 + 重试按钮</td><td><span class="tag tag-p0">P0</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-12</td><td><strong>Ctrl+Enter 快捷生成</strong></td><td>键盘快捷键触发生成</td><td><span class="tag tag-p3">P3</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-13</td><td><strong>移动端适配</strong></td><td>响应式布局适配手机访问</td><td><span class="tag tag-p1">P1</span></td><td>✅ 已完成</td></tr>
+            <tr><td>F-14</td><td><strong>简历上传与匹配度分析</strong></td><td>上传简历 → 逐项扫描与 JD 匹配度</td><td><span class="tag tag-p2">P2</span></td><td>🔄 规划中</td></tr>
+            <tr><td>F-15</td><td><strong>路线图导出</strong></td><td>导出为 PDF / Markdown</td><td><span class="tag tag-p3">P3</span></td><td>📋 待规划</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">6.2 核心功能详细规格</h3>
+
+      <!-- F-01 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l1);">F-01</span>
+          JD 双输入框
+          <span class="tag tag-p0" style="margin-left:auto;">P0</span>
+        </div>
+        <ul class="feature-list">
+          <li>
+            <div class="feature-num" style="background: var(--l1);">①</div>
+            <div class="feature-body">
+              <strong>双输入框设计</strong>
+              <span>「岗位职责」和「任职要求」分为两个独立 textarea，引导用户完整粘贴 JD 两部分内容</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l1);">②</div>
+            <div class="feature-body">
+              <strong>输入提示</strong>
+              <span>每个输入框下方有 hint 文案：「粘贴岗位「岗位职责 / 岗位描述」部分的完整文本」「能力点提取优先来源于此部分，请尽量完整」</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l1);">③</div>
+            <div class="feature-body">
+              <strong>校验规则</strong>
+              <span>两个输入框不能同时为空。「任职要求」为空时给出 toast 提醒但允许继续（降级模式）</span>
+            </div>
+          </li>
+        </ul>
+        <div class="callout">
+          <strong>设计决策：</strong>为什么不合成一个输入框？因为「任职要求」部分信息密度远高于「岗位职责」（前者写能力标准，后者写工作内容），分开输入让 AI 能区分优先级，优先从任职要求提取能力点。
+        </div>
+      </div>
+
+      <!-- F-02 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l4);">F-02</span>
+          Agent 自动分析
+          <span class="tag tag-p0" style="margin-left:auto;">P0</span>
+        </div>
+        <p>系统通过 Agent 模式（非单轮对话）完成 JD 分析：</p>
+        <ul class="feature-list">
+          <li>
+            <div class="feature-num" style="background: var(--l4);">①</div>
+            <div class="feature-body">
+              <strong>能力维度提取</strong>
+              <span>从 JD 中提取恰好 3 个最核心的能力要求，优先来自「任职要求」部分。不多不少——3 条是"选择不瘫痪"的最小有效集合</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l4);">②</div>
+            <div class="feature-body">
+              <strong>JD 原文引用</strong>
+              <span>每个能力点必须引用 JD 原文中最能体现该要求的一句话（≤30 字），让用户明确"这个项目对应 JD 哪句话"</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l4);">③</div>
+            <div class="feature-body">
+              <strong>Agent 迭代控制</strong>
+              <span>最大迭代 8 轮，建议 4 轮内进入总结阶段。防止 Agent 陷入无意义重复搜索</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- F-03 / F-04 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l2);">F-03 / F-04</span>
+          资源搜索（GitHub + HuggingFace）
+          <span class="tag tag-p0" style="margin-left:auto;">P0</span>
+        </div>
+        <p>Agent 自主调用两个外部工具搜索真实资源：</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>工具</th><th>API</th><th>搜索对象</th><th>返回字段</th><th>每次返回</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>search_github</strong></td>
+                <td>GitHub Search API</td>
+                <td>开源项目仓库</td>
+                <td>name, stars, description, url, language</td>
+                <td>Top 5（按 stars 排序）</td>
+              </tr>
+              <tr>
+                <td><strong>search_datasets</strong></td>
+                <td>HuggingFace API</td>
+                <td>公开数据集</td>
+                <td>id, downloads, likes, url</td>
+                <td>Top 3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout callout-warn">
+          <strong>容错策略：</strong>如果 search_datasets 连续 2 次返回错误或超时，Agent 自动放弃该工具，基于已有的 GitHub 资源继续生成建议，不反复重试。
+        </div>
+      </div>
+
+      <!-- F-05 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l3);">F-05</span>
+          项目卡片生成
+          <span class="tag tag-p0" style="margin-left:auto;">P0</span>
+        </div>
+        <p>每个项目建议包含以下结构化字段（JSON 格式）：</p>
+        <div class="code-block">
+<pre><span class="com">// 单个项目卡片数据结构</span>
+{
+  <span class="str">"skill"</span>:        <span class="str">"能力名称"</span>,
+  <span class="str">"jd_quote"</span>:     <span class="str">"JD 原文节选（≤30字）"</span>,
+  <span class="str">"project_title"</span>: <span class="str">"项目名称"</span>,
+  <span class="str">"project_brief"</span>: <span class="str">"具体做什么，产出什么形式"</span>,
+  <span class="str">"why_it_proves"</span>: <span class="str">"为什么能证明该能力（1-2句）"</span>,
+  <span class="str">"estimated_time"</span>: <span class="str">"预估耗时（如 2-3天）"</span>,
+  <span class="str">"references"</span>: [
+    { <span class="str">"name"</span>: <span class="str">"资源名称"</span>, <span class="str">"url"</span>: <span class="str">"链接"</span>, <span class="str">"type"</span>: <span class="str">"github|dataset"</span> }
+  ]
+}</pre>
+        </div>
+        <ul class="feature-list">
+          <li>
+            <div class="feature-num" style="background: var(--l3);">①</div>
+            <div class="feature-body">
+              <strong>恰好 3 个项目</strong>
+              <span>不是 1 条（太窄）也不是 5 条（选择过载）。3 条提供低/中/高投入三种路径，用户可选适合自己时间节奏的方案</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l3);">②</div>
+            <div class="feature-body">
+              <strong>具体到可执行</strong>
+              <span>项目建议必须具体到"今天就能开始写第一行代码"，不能是"学习数据分析"这类空泛表述。必须包含具体工具、数据来源、产出形式</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l3);">③</div>
+            <div class="feature-body">
+              <strong>证明逻辑闭环</strong>
+              <span>每个项目都有 why_it_proves 字段，说明"为什么做完这个项目就能在面试中证明该能力"，形成 JD → 项目 → 简历 → 面试的闭环</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- F-06 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l5);">F-06</span>
+          地铁线可视化
+          <span class="tag tag-p0" style="margin-left:auto;">P0</span>
+        </div>
+        <ul class="feature-list">
+          <li>
+            <div class="feature-num" style="background: var(--l5);">①</div>
+            <div class="feature-body">
+              <strong>地铁线隐喻</strong>
+              <span>把"准备过程"可视化为地铁线路：START（应届生/零经验）→ 3 个站点（能力项目）→ END（作品集就绪）。降低"不知道走到哪了"的心理焦虑</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l5);">②</div>
+            <div class="feature-body">
+              <strong>三条线路色系</strong>
+              <span>L1 红色 (#E15A42)、L2 绿色 (#1D8F80)、L3 橙色 (#E5A23A)。每条线路有独立色系，卡片顶部有对应色条</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--l5);">③</div>
+            <div class="feature-body">
+              <strong>站点动画</strong>
+              <span>站点圆点依次弹出（弹跳缓动），卡片从右侧滑入。垂直连接线从上到下展开。动画延迟随站点序号递增（0.3s + i * 0.35s）</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- F-07 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--l4);">F-07</span>
+          Agent 思考过程展示
+          <span class="tag tag-p1" style="margin-left:auto;">P1</span>
+        </div>
+        <p>通过 SSE（Server-Sent Events）流式展示 Agent 的推理过程，增强透明度和信任感：</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>事件类型</th><th>含义</th><th>展示内容</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>thinking</code></td><td>Agent 思考</td><td>模型输出的推理文本</td></tr>
+              <tr><td><code>tool_call</code></td><td>调用工具</td><td>工具名称 + 搜索关键词</td></tr>
+              <tr><td><code>tool_result</code></td><td>工具返回</td><td>搜索结果列表（Top 3）</td></tr>
+              <tr><td><code>final</code></td><td>生成完成</td><td>最终 JSON 结果</td></tr>
+              <tr><td><code>error</code></td><td>执行错误</td><td>错误信息</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <strong>设计意图：</strong>展示 Agent 思考过程不只是"炫技"。它让用户看到 AI 确实在搜索真实资源（而不是编造），增强生成结果的信任度。同时可折叠设计避免信息过载。
+        </div>
+      </div>
+
+      <!-- F-09 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="badge" style="background: var(--text-secondary);">F-09</span>
+          Demo 降级模式
+          <span class="tag tag-p1" style="margin-left:auto;">P1</span>
+        </div>
+        <ul class="feature-list">
+          <li>
+            <div class="feature-num" style="background: var(--text-secondary);">①</div>
+            <div class="feature-body">
+              <strong>自动降级</strong>
+              <span>当 API 不可用（网络错误 / 未配置 Key / 超时）时，自动加载预置的 Demo 数据并展示，toast 提示"无法连接 AI 服务，当前为 Demo 模式"</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--text-secondary);">②</div>
+            <div class="feature-body">
+              <strong>手动 Demo</strong>
+              <span>页面提供独立 Demo 按钮，用户可一键体验效果无需填写 JD</span>
+            </div>
+          </li>
+          <li>
+            <div class="feature-num" style="background: var(--text-secondary);">③</div>
+            <div class="feature-body">
+              <strong>Demo 数据质量</strong>
+              <span>预置 3 条完整的示例项目（AI 产品实操、数据分析洞察、SQL+Python Pipeline），结构与真实生成结果完全一致</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== 7. 用户流程 ====== -->
+    <section class="section" id="sec-7">
+      <div class="section-label">07 — USER FLOW</div>
+      <h2 class="section-title">用户流程</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">7.1 核心使用流程</h3>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-icon" style="background: rgba(225,90,66,0.1);">📝</div>
+          <div class="flow-title">粘贴 JD</div>
+          <div class="flow-desc">岗位职责 + 任职要求分开粘贴</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon" style="background: rgba(229,162,58,0.1);">🤖</div>
+          <div class="flow-title">Agent 分析</div>
+          <div class="flow-desc">提取 3 个核心能力维度</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon" style="background: rgba(62,95,204,0.1);">🔍</div>
+          <div class="flow-title">搜索资源</div>
+          <div class="flow-desc">GitHub + HuggingFace 真实项目</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon" style="background: rgba(138,95,191,0.1);">✨</div>
+          <div class="flow-title">生成路线</div>
+          <div class="flow-desc">3 条地铁线式项目计划</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon" style="background: rgba(29,143,128,0.1);">📋</div>
+          <div class="flow-title">复制 / 动手</div>
+          <div class="flow-desc">复制卡片 → 开始做项目</div>
+        </div>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">7.2 异常流程</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>场景</th><th>触发条件</th><th>系统行为</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>输入为空</td><td>两个输入框都为空</td><td>Toast 提示"请至少填写一个输入框"</td></tr>
+            <tr><td>缺少任职要求</td><td>只填了岗位职责</td><td>Toast 提醒"建议填写"，但允许继续</td></tr>
+            <tr><td>API 未配置</td><td>服务器无 DEEPSEEK_API_KEY</td><td>返回 400 + 错误提示</td></tr>
+            <tr><td>网络错误</td><td>fetch 失败</td><td>自动降级到 Demo 模式 + Toast 提示</td></tr>
+            <tr><td>API 超时</td><td>60 秒无响应</td><td>请求中断 + 错误 Banner + 重试按钮</td></tr>
+            <tr><td>Agent 超限</td><td>迭代超过 8 轮</td><td>SSE error 事件"思考轮次超限"</td></tr>
+            <tr><td>JSON 解析失败</td><td>Agent 输出非合法 JSON</td><td>自动调用修复 Prompt 重试一次</td></tr>
+            <tr><td>工具搜索失败</td><td>GitHub/HF API 超时</td><td>Agent 继续基于已有资源生成</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 8. 技术架构 ====== -->
+    <section class="section" id="sec-8">
+      <div class="section-label">08 — TECHNICAL ARCHITECTURE</div>
+      <h2 class="section-title">技术架构</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">8.1 系统架构</h3>
+
+      <div class="arch-diagram">
+        <div class="arch-layer" style="border-top: 3px solid var(--l1);">
+          <div class="arch-layer-name" style="color: var(--l1);">前端层</div>
+          <div class="arch-layer-desc">
+            纯 HTML + CSS + JS（无框架） · 双输入框 · SSE 事件流消费 · 地铁线可视化渲染 · 响应式布局
+          </div>
+        </div>
+        <div class="arch-arrow">↕ HTTP / SSE</div>
+        <div class="arch-layer" style="border-top: 3px solid var(--l3);">
+          <div class="arch-layer-name" style="color: var(--l3);">服务层</div>
+          <div class="arch-layer-desc">
+            Node.js 原生 HTTP Server · 静态文件服务 · Agent 循环调度 · SSE 流式推送 · JSON 格式化与修复
+          </div>
+        </div>
+        <div class="arch-arrow">↕ HTTPS API</div>
+        <div class="arch-layer" style="border-top: 3px solid var(--l4);">
+          <div class="arch-layer-name" style="color: var(--l4);">AI 层</div>
+          <div class="arch-layer-desc">
+            DeepSeek API (deepseek-v4-flash) · Function Calling (tool_choice: auto) · 两阶段生成（Agent 自然语言 → JSON 格式化）
+          </div>
+        </div>
+        <div class="arch-arrow">↕ HTTPS API</div>
+        <div class="arch-layer" style="border-top: 3px solid var(--l2);">
+          <div class="arch-layer-name" style="color: var(--l2);">工具层</div>
+          <div class="arch-layer-desc">
+            GitHub Search API（开源项目搜索） · HuggingFace API（数据集搜索） · 超时保护（10s / 20s）
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">8.2 Agent 工作流程</h3>
+      <div class="card">
+        <p>Transit 采用<strong>两阶段 Agent 架构</strong>：</p>
+        <ol style="margin: 8px 0 0 20px; color: var(--text-secondary); line-height: 2;">
+          <li><strong>阶段一：Agent 循环</strong> — 模型接收 JD → 自主决定是否调用工具 → 执行工具搜索 → 获取结果 → 继续推理 → 输出自然语言总结。最多 8 轮迭代，建议 4 轮内完成</li>
+          <li><strong>阶段二：JSON 格式化</strong> — 将阶段一的自然语言总结输入第二个 Prompt，低温（0.3）格式化为严格 JSON 数组。如果解析失败，自动修复一次</li>
+        </ol>
+        <div class="callout">
+          <strong>为什么两阶段？</strong>Agent 模式擅长"搜索 + 推理"，但不擅长"输出严格格式"。拆成两阶段后，阶段一专注内容质量，阶段二专注格式规范，两者各司其职，成功率显著提升。
+        </div>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">8.3 API 端点</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>端点</th><th>方法</th><th>功能</th><th>响应格式</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/api/agent</code></td><td>POST</td><td>Agent 生成路线图</td><td>SSE (text/event-stream)</td></tr>
+            <tr><td><code>/api/chat</code></td><td>POST</td><td>兼容旧版直接对话</td><td>JSON</td></tr>
+            <tr><td><code>/api/status</code></td><td>GET</td><td>检查 API 配置状态</td><td>JSON</td></tr>
+            <tr><td><code>/api/upload-resume</code></td><td>POST</td><td>简历上传与文本提取</td><td>JSON</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">8.4 Agent 工具定义</h3>
+      <div class="code-block">
+<pre><span class="com">// 工具 1：GitHub 项目搜索</span>
+{
+  <span class="str">"name"</span>: <span class="str">"search_github"</span>,
+  <span class="str">"description"</span>: <span class="str">"Search GitHub for open-source projects"</span>,
+  <span class="str">"parameters"</span>: { <span class="str">"keyword"</span>: <span class="str">"string (English)"</span> }
+}
+
+<span class="com">// 工具 2：数据集搜索</span>
+{
+  <span class="str">"name"</span>: <span class="str">"search_datasets"</span>,
+  <span class="str">"description"</span>: <span class="str">"Search HuggingFace for public datasets"</span>,
+  <span class="str">"parameters"</span>: { <span class="str">"keyword"</span>: <span class="str">"string (English)"</span> }
+}</pre>
+      </div>
+    </section>
+
+    <!-- ====== 9. 交互设计 ====== -->
+    <section class="section" id="sec-9">
+      <div class="section-label">09 — INTERACTION DESIGN</div>
+      <h2 class="section-title">交互设计规范</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">9.1 设计系统</h3>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td style="width:120px;"><strong>主色调</strong></td><td>自然灰绿底色 (#EEF0EC) + 深色文字 (#1A2330)</td></tr>
+            <tr><td><strong>线路色</strong></td><td>L1 红 #E15A42 · L2 绿 #1D8F80 · L3 橙 #E5A23A · L4 蓝 #3E5FCC · L5 紫 #8A5FBF</td></tr>
+            <tr><td><strong>字体</strong></td><td>Space Grotesk（标题）· Inter（正文）· Space Mono（等宽/标签）</td></tr>
+            <tr><td><strong>圆角</strong></td><td>14px（卡片）· 10px（输入框/按钮）</td></tr>
+            <tr><td><strong>阴影</strong></td><td>3 级阴影系统（xs / sm / lg），含 1px 内边框模拟</td></tr>
+            <tr><td><strong>动画</strong></td><td>0.3s cubic-bezier(0.4,0,0.2,1) 标准过渡 · 0.5s cubic-bezier(0.34,1.56,0.64,1) 弹跳</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">9.2 关键交互细节</h3>
+      <ul class="feature-list">
+        <li>
+          <div class="feature-num" style="background: var(--l1);">①</div>
+          <div class="feature-body">
+            <strong>生成按钮态切换</strong>
+            <span>默认态 → 加载态（spinner 动画 + 禁用）→ 完成。加载期间不能重复点击</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature-num" style="background: var(--l3);">②</div>
+          <div class="feature-body">
+            <strong>Agent 思考面板</strong>
+            <span>默认展开，可折叠。每个步骤有 icon 区分类型（思考/工具/结果/完成/错误），自动滚动到底部</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature-num" style="background: var(--l4);">③</div>
+          <div class="feature-body">
+            <strong>站点卡片入场动画</strong>
+            <span>垂直连接线 scaleY 从上到下展开 → 站点圆点弹跳放大 → 卡片从右侧滑入。延迟递增形成"逐站到达"效果</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature-num" style="background: var(--l5);">④</div>
+          <div class="feature-body">
+            <strong>卡片悬停效果</strong>
+            <span>hover 时阴影加深 + 上浮 3px，增强可交互感</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature-num" style="background: var(--l2);">⑤</div>
+          <div class="feature-body">
+            <strong>复制反馈</strong>
+            <span>点击复制按钮 → 图标变为 ✓ + 文字变为"已复制" + 颜色变绿 → 2 秒后恢复</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature-num" style="background: var(--text-secondary);">⑥</div>
+          <div class="feature-body">
+            <strong>错误 Banner</strong>
+            <span>滑入动画 + 红色背景 + 错误图标 + 重试按钮 + Demo 降级按钮，三选一处理</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ====== 10. 数据定义 ====== -->
+    <section class="section" id="sec-10">
+      <div class="section-label">10 — DATA DEFINITION</div>
+      <h2 class="section-title">数据定义</h2>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">10.1 输入数据</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>responsibilities</td><td>string</td><td>二选一</td><td>岗位职责文本</td></tr>
+            <tr><td>requirements</td><td>string</td><td>二选一（优先）</td><td>任职要求文本</td></tr>
+            <tr><td>temperature</td><td>float</td><td>否</td><td>生成温度，默认 0.7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">10.2 输出数据</h3>
+      <p>Agent 最终输出为 JSON 数组，恰好包含 3 个对象，每个对象结构如下：</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>字段</th><th>类型</th><th>必含</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>skill</td><td>string</td><td>是</td><td>能力维度名称</td></tr>
+            <tr><td>jd_quote</td><td>string</td><td>是</td><td>JD 原文节选（≤30 字）</td></tr>
+            <tr><td>project_title</td><td>string</td><td>是</td><td>项目名称</td></tr>
+            <tr><td>project_brief</td><td>string</td><td>是</td><td>具体做法 + 产出形式</td></tr>
+            <tr><td>why_it_proves</td><td>string</td><td>是</td><td>证明逻辑（1-2 句）</td></tr>
+            <tr><td>estimated_time</td><td>string</td><td>是</td><td>预估耗时</td></tr>
+            <tr><td>references</td><td>array</td><td>是</td><td>参考资源列表</td></tr>
+            <tr><td>references[].name</td><td>string</td><td>是</td><td>资源名称</td></tr>
+            <tr><td>references[].url</td><td>string</td><td>是</td><td>资源链接</td></tr>
+            <tr><td>references[].type</td><td>string</td><td>是</td><td>"github" 或 "dataset"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 11. 非功能需求 ====== -->
+    <section class="section" id="sec-11">
+      <div class="section-label">11 — NON-FUNCTIONAL REQUIREMENTS</div>
+      <h2 class="section-title">非功能需求</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>类别</th><th>指标</th><th>要求</th></tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="3"><strong>性能</strong></td><td>首屏加载</td><td>≤ 2s（静态资源 CDN）</td></tr>
+            <tr><td>Agent 响应</td><td>P50 ≤ 20s · P90 ≤ 30s（含工具搜索）</td></tr>
+            <tr><td>工具超时</td><td>GitHub 10s · HuggingFace 20s · DeepSeek API 60s</td></tr>
+            <tr><td rowspan="2"><strong>可用性</strong></td><td>Demo 降级</td><td>API 不可用时自动降级，100% 可展示</td></tr>
+            <tr><td>错误恢复</td><td>JSON 解析失败自动修复 1 次</td></tr>
+            <tr><td rowspan="2"><strong>安全</strong></td><td>API Key</td><td>仅存储在服务器环境变量，前端不可见</td></tr>
+            <tr><td>输入限制</td><td>简历上传 ≤ 10MB · JD 文本无硬限（建议 ≤ 5000 字）</td></tr>
+            <tr><td rowspan="2"><strong>兼容性</strong></td><td>浏览器</td><td>Chrome / Edge / Safari / Firefox 最新版</td></tr>
+            <tr><td>移动端</td><td>响应式适配 ≥ 375px 宽度</td></tr>
+            <tr><td rowspan="2"><strong>部署</strong></td><td>静态托管</td><td>Vercel 自动部署（GitHub push 触发）</td></tr>
+            <tr><td>本地开发</td><td>Node.js 原生 HTTP Server，端口 3000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== 12. 迭代规划 ====== -->
+    <section class="section" id="sec-12">
+      <div class="section-label">12 — ROADMAP</div>
+      <h2 class="section-title">迭代规划</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>版本</th><th>阶段</th><th>核心功能</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>v1.0</strong></td>
+              <td>MVP</td>
+              <td>JD 双输入 → Agent 分析 → GitHub/HF 搜索 → 地铁线可视化 → 卡片复制 → Demo 降级</td>
+              <td><span class="tag tag-p0">已上线</span></td>
+            </tr>
+            <tr>
+              <td><strong>v1.1</strong></td>
+              <td>体验优化</td>
+              <td>生成结果缓存（相同 JD 5 分钟内不重复请求）· 历史记录（localStorage）· 路线图分享链接</td>
+              <td><span class="tag tag-p1">规划中</span></td>
+            </tr>
+            <tr>
+              <td><strong>v1.2</strong></td>
+              <td>简历匹配</td>
+              <td>上传简历 PDF/Word → 文本提取 → 逐项扫描与 JD 匹配度 → 差距分析报告</td>
+              <td><span class="tag tag-p2">规划中</span></td>
+            </tr>
+            <tr>
+              <td><strong>v2.0</strong></td>
+              <td>全流程闭环</td>
+              <td>路线图 → 项目执行跟踪 → 简历自动生成 → 面试准备卡片。从"告诉你做什么"到"陪你做完"</td>
+              <td><span class="tag tag-p3">待规划</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>v2.0 愿景：</strong>Transit 最终要成为一个"求职项目教练"——不只是生成路线图，而是陪伴用户从"看到 JD"到"拿着做完的项目去面试"的全流程。每个项目有进度跟踪、完成验证、简历段落自动生成、面试话术建议。
+      </div>
+    </section>
+
+    <!-- ====== 13. 风险与对策 ====== -->
+    <section class="section" id="sec-13">
+      <div class="section-label">13 — RISKS & MITIGATION</div>
+      <h2 class="section-title">风险与对策</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>风险</th><th>影响</th><th>概率</th><th>对策</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Agent 输出格式不稳定</strong></td>
+              <td>前端渲染失败</td>
+              <td>中</td>
+              <td>两阶段生成 + JSON 修复重试 + Demo 降级兜底</td>
+            </tr>
+            <tr>
+              <td><strong>GitHub API 限流</strong></td>
+              <td>工具搜索无结果</td>
+              <td>低</td>
+              <td>Agent 容错（无结果时基于已有资源继续生成）</td>
+            </tr>
+            <tr>
+              <td><strong>Agent 迭代超限</strong></td>
+              <td>用户等待过久</td>
+              <td>低</td>
+              <td>最大 8 轮限制 + Prompt 指引 4 轮内完成</td>
+            </tr>
+            <tr>
+              <td><strong>生成内容同质化</strong></td>
+              <td>不同 JD 生成相似项目</td>
+              <td>中</td>
+              <td>Temperature 0.7 + 强制引用 JD 原文 + 真实资源搜索</td>
+            </tr>
+            <tr>
+              <td><strong>API 成本</strong></td>
+              <td>高频使用费用高</td>
+              <td>低</td>
+              <td>使用 deepseek-v4-flash（低成本模型）+ 结果缓存（规划中）</td>
+            </tr>
+            <tr>
+              <td><strong>用户不信任 AI 建议</strong></td>
+              <td>生成结果不采纳</td>
+              <td>中</td>
+              <td>展示 Agent 思考过程 + 引用真实 GitHub 链接 + JD 原文对标</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer>
+    <p><strong>Transit</strong> &middot; 产品需求文档 PRD v1.0 &middot; 2026.08</p>
+    <p style="margin-top: 4px;">基于 VoiceMap 108 条用户研究数据 · AI Agent 架构 · DeepSeek API</p>
+  </footer>
+
+  <script>
+    // TOC active state on scroll
+    const sections = document.querySelectorAll('.section');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          tocLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-80px 0px -70% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
