@@ -4,7 +4,29 @@
 
 ## 这是什么
 
-一个 AI 产品经理作品集，包含四个模块，完整展示 **用户研究 → 产品规划 → 需求文档 → 简历优化** 的产品全链路能力。
+一个 AI 产品经理作品集，包含五个模块，完整展示 **用户研究 → 产品规划 → 需求文档 → 简历优化** 的产品全链路能力。
+
+## 预览
+
+### Transit · AI Agent 求职项目路线图
+
+![Transit](screenshots/transit.png)
+
+### VoiceMap · 真实求职声音洞察
+
+![VoiceMap](screenshots/voicemap.png)
+
+### PRD · Transit 产品需求文档
+
+![PRD](screenshots/prd.png)
+
+### Screen · 简历优化工具
+
+![Screen](screenshots/screen.png)
+
+### Presentation · 项目演示文稿
+
+![Presentation](screenshots/presentation.png)
 
 ## 模块说明
 
@@ -59,4 +81,6 @@ VoiceMap 的 108 条用户数据来自四个平台：
 
 通过 WebSearch + WebFetch 采集，AI 主题聚类归纳为 7 大痛点类别。
 
+## 作者
 
+朱香琳
