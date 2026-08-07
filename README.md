@@ -81,6 +81,3 @@ VoiceMap 的 108 条用户数据来自四个平台：
 
 通过 WebSearch + WebFetch 采集，AI 主题聚类归纳为 7 大痛点类别。
 
-## 作者
-
-朱香琳
