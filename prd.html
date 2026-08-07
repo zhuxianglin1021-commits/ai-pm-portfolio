@@ -395,11 +395,8 @@
     <a href="#sec-6" class="toc-link">6. 功能需求</a>
     <a href="#sec-7" class="toc-link">7. 用户流程</a>
     <a href="#sec-8" class="toc-link">8. 技术架构</a>
-    <a href="#sec-9" class="toc-link">9. 交互设计</a>
-    <a href="#sec-10" class="toc-link">10. 数据定义</a>
-    <a href="#sec-11" class="toc-link">11. 非功能需求</a>
-    <a href="#sec-12" class="toc-link">12. 迭代规划</a>
-    <a href="#sec-13" class="toc-link">13. 风险与对策</a>
+    <a href="#sec-9" class="toc-link">9. 迭代规划</a>
+    <a href="#sec-10" class="toc-link">10. 风险与对策</a>
   </nav>
 
   <!-- ====== Hero ====== -->
@@ -426,9 +423,12 @@
         </div>
         <div class="hero-meta-item">
           <div class="hero-meta-label">OWNER</div>
-          <div class="hero-meta-value">朱翔林</div>
+          <div class="hero-meta-value">朱香琳</div>
         </div>
       </div>
+      <a href="https://ai-pm-portfolio-73sac3ub9-secret22.vercel.app" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 12px 28px; background: var(--l4); color: #fff; text-decoration: none; border-radius: 10px; font-family: var(--font-display); font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(62,95,204,0.3); transition: transform 0.2s, box-shadow 0.2s;">
+        🚀 在线体验 Transit
+      </a>
     </div>
   </header>
 
@@ -445,17 +445,17 @@
             <tr><td style="width:140px;"><strong>产品名称</strong></td><td>Transit — JD 路线图生成器</td></tr>
             <tr><td><strong>文档版本</strong></td><td>v1.0（MVP 已上线版本）</td></tr>
             <tr><td><strong>撰写日期</strong></td><td>2026 年 8 月</td></tr>
-            <tr><td><strong>产品负责人</strong></td><td>朱翔林</td></tr>
+            <tr><td><strong>产品负责人</strong></td><td>朱香琳</td></tr>
             <tr><td><strong>文档状态</strong></td><td>已评审 / 开发完成 / 已部署</td></tr>
             <tr><td><strong>相关文档</strong></td><td>VoiceMap 用户研究报告（108 条样本 / 七大痛点聚类）</td></tr>
-            <tr><td><strong>线上地址</strong></td><td>ai-pm-portfolio.vercel.app</td></tr>
+            <tr><td><strong>线上地址</strong></td><td><a href="https://ai-pm-portfolio-73sac3ub9-secret22.vercel.app" target="_blank" style="color: var(--l4); text-decoration: underline;">ai-pm-portfolio-73sac3ub9-secret22.vercel.app</a></td></tr>
             <tr><td><strong>代码仓库</strong></td><td>github.com/zhuxianglin1021-commits/ai-pm-portfolio</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="callout">
-        <strong>修订记录：</strong>v1.0 基于 VoiceMap 用户研究结论定型，覆盖 MVP 全部功能。后续迭代计划见第 12 节。
+        <strong>修订记录：</strong>v1.0 基于 VoiceMap 用户研究结论定型，覆盖 MVP 全部功能。后续迭代计划见第 9 节。
       </div>
     </section>
 
@@ -975,13 +975,9 @@
           </thead>
           <tbody>
             <tr><td>输入为空</td><td>两个输入框都为空</td><td>Toast 提示"请至少填写一个输入框"</td></tr>
-            <tr><td>缺少任职要求</td><td>只填了岗位职责</td><td>Toast 提醒"建议填写"，但允许继续</td></tr>
-            <tr><td>API 未配置</td><td>服务器无 DEEPSEEK_API_KEY</td><td>返回 400 + 错误提示</td></tr>
-            <tr><td>网络错误</td><td>fetch 失败</td><td>自动降级到 Demo 模式 + Toast 提示</td></tr>
+            <tr><td>网络错误 / API 不可用</td><td>fetch 失败或未配置 Key</td><td>自动降级到 Demo 模式 + Toast 提示</td></tr>
             <tr><td>API 超时</td><td>60 秒无响应</td><td>请求中断 + 错误 Banner + 重试按钮</td></tr>
-            <tr><td>Agent 超限</td><td>迭代超过 8 轮</td><td>SSE error 事件"思考轮次超限"</td></tr>
             <tr><td>JSON 解析失败</td><td>Agent 输出非合法 JSON</td><td>自动调用修复 Prompt 重试一次</td></tr>
-            <tr><td>工具搜索失败</td><td>GitHub/HF API 超时</td><td>Agent 继续基于已有资源生成</td></tr>
           </tbody>
         </table>
       </div>
@@ -1069,144 +1065,9 @@
       </div>
     </section>
 
-    <!-- ====== 9. 交互设计 ====== -->
+    <!-- ====== 9. 迭代规划 ====== -->
     <section class="section" id="sec-9">
-      <div class="section-label">09 — INTERACTION DESIGN</div>
-      <h2 class="section-title">交互设计规范</h2>
-
-      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">9.1 设计系统</h3>
-      <div class="table-wrap">
-        <table>
-          <tbody>
-            <tr><td style="width:120px;"><strong>主色调</strong></td><td>自然灰绿底色 (#EEF0EC) + 深色文字 (#1A2330)</td></tr>
-            <tr><td><strong>线路色</strong></td><td>L1 红 #E15A42 · L2 绿 #1D8F80 · L3 橙 #E5A23A · L4 蓝 #3E5FCC · L5 紫 #8A5FBF</td></tr>
-            <tr><td><strong>字体</strong></td><td>Space Grotesk（标题）· Inter（正文）· Space Mono（等宽/标签）</td></tr>
-            <tr><td><strong>圆角</strong></td><td>14px（卡片）· 10px（输入框/按钮）</td></tr>
-            <tr><td><strong>阴影</strong></td><td>3 级阴影系统（xs / sm / lg），含 1px 内边框模拟</td></tr>
-            <tr><td><strong>动画</strong></td><td>0.3s cubic-bezier(0.4,0,0.2,1) 标准过渡 · 0.5s cubic-bezier(0.34,1.56,0.64,1) 弹跳</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">9.2 关键交互细节</h3>
-      <ul class="feature-list">
-        <li>
-          <div class="feature-num" style="background: var(--l1);">①</div>
-          <div class="feature-body">
-            <strong>生成按钮态切换</strong>
-            <span>默认态 → 加载态（spinner 动画 + 禁用）→ 完成。加载期间不能重复点击</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature-num" style="background: var(--l3);">②</div>
-          <div class="feature-body">
-            <strong>Agent 思考面板</strong>
-            <span>默认展开，可折叠。每个步骤有 icon 区分类型（思考/工具/结果/完成/错误），自动滚动到底部</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature-num" style="background: var(--l4);">③</div>
-          <div class="feature-body">
-            <strong>站点卡片入场动画</strong>
-            <span>垂直连接线 scaleY 从上到下展开 → 站点圆点弹跳放大 → 卡片从右侧滑入。延迟递增形成"逐站到达"效果</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature-num" style="background: var(--l5);">④</div>
-          <div class="feature-body">
-            <strong>卡片悬停效果</strong>
-            <span>hover 时阴影加深 + 上浮 3px，增强可交互感</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature-num" style="background: var(--l2);">⑤</div>
-          <div class="feature-body">
-            <strong>复制反馈</strong>
-            <span>点击复制按钮 → 图标变为 ✓ + 文字变为"已复制" + 颜色变绿 → 2 秒后恢复</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature-num" style="background: var(--text-secondary);">⑥</div>
-          <div class="feature-body">
-            <strong>错误 Banner</strong>
-            <span>滑入动画 + 红色背景 + 错误图标 + 重试按钮 + Demo 降级按钮，三选一处理</span>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <!-- ====== 10. 数据定义 ====== -->
-    <section class="section" id="sec-10">
-      <div class="section-label">10 — DATA DEFINITION</div>
-      <h2 class="section-title">数据定义</h2>
-
-      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 20px 0 12px; color: var(--text-primary);">10.1 输入数据</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>responsibilities</td><td>string</td><td>二选一</td><td>岗位职责文本</td></tr>
-            <tr><td>requirements</td><td>string</td><td>二选一（优先）</td><td>任职要求文本</td></tr>
-            <tr><td>temperature</td><td>float</td><td>否</td><td>生成温度，默认 0.7</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 style="font-family: var(--font-display); font-size: 16px; margin: 24px 0 12px; color: var(--text-primary);">10.2 输出数据</h3>
-      <p>Agent 最终输出为 JSON 数组，恰好包含 3 个对象，每个对象结构如下：</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>字段</th><th>类型</th><th>必含</th><th>说明</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>skill</td><td>string</td><td>是</td><td>能力维度名称</td></tr>
-            <tr><td>jd_quote</td><td>string</td><td>是</td><td>JD 原文节选（≤30 字）</td></tr>
-            <tr><td>project_title</td><td>string</td><td>是</td><td>项目名称</td></tr>
-            <tr><td>project_brief</td><td>string</td><td>是</td><td>具体做法 + 产出形式</td></tr>
-            <tr><td>why_it_proves</td><td>string</td><td>是</td><td>证明逻辑（1-2 句）</td></tr>
-            <tr><td>estimated_time</td><td>string</td><td>是</td><td>预估耗时</td></tr>
-            <tr><td>references</td><td>array</td><td>是</td><td>参考资源列表</td></tr>
-            <tr><td>references[].name</td><td>string</td><td>是</td><td>资源名称</td></tr>
-            <tr><td>references[].url</td><td>string</td><td>是</td><td>资源链接</td></tr>
-            <tr><td>references[].type</td><td>string</td><td>是</td><td>"github" 或 "dataset"</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ====== 11. 非功能需求 ====== -->
-    <section class="section" id="sec-11">
-      <div class="section-label">11 — NON-FUNCTIONAL REQUIREMENTS</div>
-      <h2 class="section-title">非功能需求</h2>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>类别</th><th>指标</th><th>要求</th></tr>
-          </thead>
-          <tbody>
-            <tr><td rowspan="3"><strong>性能</strong></td><td>首屏加载</td><td>≤ 2s（静态资源 CDN）</td></tr>
-            <tr><td>Agent 响应</td><td>P50 ≤ 20s · P90 ≤ 30s（含工具搜索）</td></tr>
-            <tr><td>工具超时</td><td>GitHub 10s · HuggingFace 20s · DeepSeek API 60s</td></tr>
-            <tr><td rowspan="2"><strong>可用性</strong></td><td>Demo 降级</td><td>API 不可用时自动降级，100% 可展示</td></tr>
-            <tr><td>错误恢复</td><td>JSON 解析失败自动修复 1 次</td></tr>
-            <tr><td rowspan="2"><strong>安全</strong></td><td>API Key</td><td>仅存储在服务器环境变量，前端不可见</td></tr>
-            <tr><td>输入限制</td><td>简历上传 ≤ 10MB · JD 文本无硬限（建议 ≤ 5000 字）</td></tr>
-            <tr><td rowspan="2"><strong>兼容性</strong></td><td>浏览器</td><td>Chrome / Edge / Safari / Firefox 最新版</td></tr>
-            <tr><td>移动端</td><td>响应式适配 ≥ 375px 宽度</td></tr>
-            <tr><td rowspan="2"><strong>部署</strong></td><td>静态托管</td><td>Vercel 自动部署（GitHub push 触发）</td></tr>
-            <tr><td>本地开发</td><td>Node.js 原生 HTTP Server，端口 3000</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ====== 12. 迭代规划 ====== -->
-    <section class="section" id="sec-12">
-      <div class="section-label">12 — ROADMAP</div>
+      <div class="section-label">09 — ROADMAP</div>
       <h2 class="section-title">迭代规划</h2>
 
       <div class="table-wrap">
@@ -1299,9 +1160,9 @@
       </div>
     </section>
 
-    <!-- ====== 13. 风险与对策 ====== -->
-    <section class="section" id="sec-13">
-      <div class="section-label">13 — RISKS & MITIGATION</div>
+    <!-- ====== 10. 风险与对策 ====== -->
+    <section class="section" id="sec-10">
+      <div class="section-label">10 — RISKS & MITIGATION</div>
       <h2 class="section-title">风险与对策</h2>
 
       <div class="table-wrap">
