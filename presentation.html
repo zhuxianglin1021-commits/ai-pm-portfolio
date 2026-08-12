@@ -61,7 +61,7 @@
 
     .deck {
       width: 100vw;
-      height: 100vh;
+      height: calc(100vh - 54px);
       position: relative;
       overflow: hidden;
     }
@@ -900,9 +900,74 @@
       .loop-diagram { flex-direction: column; }
       .loop-arrow { transform: rotate(90deg); }
     }
+
+    /* ====== Project Nav ====== */
+    .project-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 54px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-display);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 10px;
+      transition: 0.25s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-item:hover {
+      background: rgba(26,35,48,0.04);
+      color: var(--text-primary);
+    }
+    .nav-item.active {
+      background: var(--text-primary);
+      color: #fff;
+    }
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
+
+<!-- ====== Project Nav ====== -->
+<nav class="project-nav">
+  <div class="nav-inner">
+    <a href="voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
+    <a href="index.html" class="nav-item"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
+    <a href="prd.html" class="nav-item"><span class="nav-dot" style="background:var(--l5)"></span>PRD</a>
+    <a href="screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
+    <a href="growth.html" class="nav-item"><span class="nav-dot" style="background:var(--l2)"></span>Growth</a>
+    <a href="presentation.html" class="nav-item active"><span class="nav-dot" style="background:var(--text-tertiary)"></span>Presentation</a>
+  </div>
+</nav>
 
 <div class="deck" id="deck">
 

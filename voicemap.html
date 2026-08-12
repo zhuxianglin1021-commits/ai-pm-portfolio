@@ -25,6 +25,13 @@
   --c4: #9C36B5;
   --c5: #E03131;
   --c6: #0CA678;
+  --l1: #E15A42;
+  --l2: #1D8F80;
+  --l3: #E5A23A;
+  --l4: #3E5FCC;
+  --l5: #8A5FBF;
+  --text-secondary: #6B7280;
+  --text-tertiary: #A0A8B4;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -583,7 +590,7 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(200,200,200,0.5);
@@ -591,31 +598,37 @@ body::before {
 .nav-inner {
   max-width: 920px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
   display: flex;
-  gap: 4px;
-  height: 44px;
   align-items: center;
+  gap: 2px;
+  height: 54px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.nav-inner::-webkit-scrollbar { display: none; }
 .nav-item {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 6px 14px;
+  gap: 8px;
+  padding: 7px 12px;
   font-size: 13px;
   font-weight: 500;
   font-family: 'Space Grotesk', sans-serif;
-  color: #6B7585;
+  color: var(--text-secondary);
   text-decoration: none;
-  border-radius: 100px;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 10px;
+  transition: 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .nav-item:hover {
-  background: rgba(26,35,48,0.04);
-  color: #1A2330;
+  background: rgba(28,36,48,0.04);
+  color: var(--text);
 }
 .nav-item.active {
-  background: #1A2330;
+  background: #1C2430;
   color: #fff;
 }
 .nav-dot {
@@ -631,9 +644,12 @@ body::before {
   <!-- ====== Project Nav ====== -->
   <nav class="project-nav">
     <div class="nav-inner">
-      <a href="/voicemap.html" class="nav-item active"><span class="nav-dot" style="background:var(--c3)"></span>VoiceMap</a>
-      <a href="/index.html" class="nav-item"><span class="nav-dot" style="background:var(--c1)"></span>Transit</a>
-      <a href="/screen.html" class="nav-item"><span class="nav-dot" style="background:var(--c4)"></span>Screen</a>
+      <a href="voicemap.html" class="nav-item active"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
+      <a href="index.html" class="nav-item"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
+      <a href="prd.html" class="nav-item"><span class="nav-dot" style="background:var(--l5)"></span>PRD</a>
+      <a href="screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
+      <a href="growth.html" class="nav-item"><span class="nav-dot" style="background:var(--l2)"></span>Growth</a>
+      <a href="presentation.html" class="nav-item"><span class="nav-dot" style="background:var(--text-tertiary)"></span>Presentation</a>
     </div>
   </nav>
 

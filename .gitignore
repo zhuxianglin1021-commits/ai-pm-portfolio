@@ -6,3 +6,7 @@ test*
 nul
 pain_points.json
 raw_posts.json
+
+# 独立项目：AI产品经理岗位数据分析（不上传）
+data-analysis/
+check_db.py

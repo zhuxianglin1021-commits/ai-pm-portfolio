@@ -4,7 +4,7 @@
 
 ## 这是什么
 
-一个 AI 产品经理作品集，包含五个模块，完整展示 **用户研究 → 产品规划 → 需求文档 → 简历优化** 的产品全链路能力。
+一个 AI 产品经理作品集，包含六个模块，完整展示 **用户研究 → 产品方案 → 需求文档 → 简历优化 → 增长策略 → 项目演示** 的产品全链路能力。
 
 ## 预览
 
@@ -24,6 +24,10 @@
 
 ![Screen](screenshots/screen.png)
 
+### Growth · 增长策略
+
+![Growth](screenshots/growth.png)
+
 ### Presentation · 项目演示文稿
 
 ![Presentation](screenshots/presentation.png)
@@ -32,10 +36,11 @@
 
 | 页面 | 文件 | 说明 |
 |------|------|------|
-| **Transit** | `index.html` | 核心产品。AI Agent 驱动的求职项目路线图生成器，粘贴 JD → 自动提取能力点 → 搜索真实资源 → 生成 3 个项目建议 |
 | **VoiceMap** | `voicemap.html` | 用户研究模块。采集牛客网/知乎/V2EX/小红书四平台 108 条真实求职者发言，AI 主题聚类为 7 大痛点 |
-| **Screen** | `screen.html` | 简历优化工具。AI 分析简历与 JD 匹配度，给出逐句优化建议 |
+| **Transit** | `index.html` | 核心产品。AI Agent 驱动的求职项目路线图生成器，粘贴 JD → 自动提取能力点 → 搜索真实资源 → 生成 3 个项目建议 |
 | **PRD** | `prd.html` | Transit 产品需求文档 v1.0，10 章节，含 V2.0 迭代规划 |
+| **Screen** | `screen.html` | 简历优化工具。AI 分析简历与 JD 匹配度，给出逐句优化建议 |
+| **Growth** | `growth.html` | 增长策略模块。Transit 的增长飞轮与冷启动方案 |
 | **Presentation** | `presentation.html` | 项目演示文稿 |
 
 ## 技术栈
@@ -80,4 +85,3 @@ VoiceMap 的 108 条用户数据来自四个平台：
 - 小红书（11 条）—— 求职经验分享
 
 通过 WebSearch + WebFetch 采集，AI 主题聚类归纳为 7 大痛点类别。
-
