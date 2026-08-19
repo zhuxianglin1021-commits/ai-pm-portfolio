@@ -18,8 +18,30 @@ try { ({ PDFParse } = require('pdf-parse')); } catch(e) { console.log('  ⚠️ 
 try { mammoth = require('mammoth'); } catch(e) { console.log('  ⚠️ mammoth 未安装，简历上传(Word)不可用'); }
 
 // ====== 在这里填写你的 API 配置 ======
-// 本地运行时，在终端使用：set DEEPSEEK_API_KEY=你的key（Windows）或 export DEEPSEEK_API_KEY=你的key（Mac/Linux）
+// 推荐方式：把 Key 填进项目根目录的 .env 文件（DEEPSEEK_API_KEY=sk-xxx），启动时自动读取
+// 也可以：本地运行时在终端设置 set DEEPSEEK_API_KEY=你的key（Windows）或 export DEEPSEEK_API_KEY=你的key（Mac/Linux）
 const API_BASE_URL = 'https://api.deepseek.com/v1';
+
+// 自动读取根目录 .env 文件（不覆盖已存在的系统环境变量）
+try {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    for (const line of envContent.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eq = trimmed.indexOf('=');
+      if (eq > 0) {
+        const envKey = trimmed.slice(0, eq).trim();
+        const envValue = trimmed.slice(eq + 1).trim();
+        if (!process.env[envKey]) process.env[envKey] = envValue;
+      }
+    }
+  }
+} catch (e) {
+  console.log('  ⚠️ .env 文件读取失败（不影响启动）:', e.message);
+}
+
 const API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const API_MODEL  = 'deepseek-v4-flash';
 // ====================================

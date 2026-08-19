@@ -54,27 +54,6 @@
     /* ====== Layout ====== */
     .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
 
-    /* ====== Project Nav ====== */
-    .project-nav {
-      position: sticky; top: 0; z-index: 1000;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      max-width: 920px; margin: 0 auto; padding: 0 24px;
-      display: flex; gap: 4px; height: 44px; align-items: center;
-    }
-    .nav-item {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 6px 14px; font-size: 13px; font-weight: 500;
-      font-family: var(--font-display); color: var(--text-secondary);
-      text-decoration: none; border-radius: 100px; transition: 0.3s;
-    }
-    .nav-item:hover { background: rgba(26,35,48,0.04); color: var(--text-primary); }
-    .nav-item.active { background: var(--text-primary); color: #fff; }
-    .nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-
     /* ====== TOC Sidebar ====== */
     .toc {
       position: fixed; top: 60px; left: 24px;
@@ -373,18 +352,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ====== Project Nav ====== -->
-  <nav class="project-nav">
-    <div class="nav-inner">
-      <a href="voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
-      <a href="index.html" class="nav-item"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
-      <a href="prd.html" class="nav-item active"><span class="nav-dot" style="background:var(--l5)"></span>PRD</a>
-      <a href="screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
-      <a href="growth.html" class="nav-item"><span class="nav-dot" style="background:var(--l2)"></span>Growth</a>
-      <a href="presentation.html" class="nav-item"><span class="nav-dot" style="background:var(--text-tertiary)"></span>Presentation</a>
-    </div>
-  </nav>
 
   <!-- ====== TOC ====== -->
   <nav class="toc" id="toc">
@@ -1094,8 +1061,8 @@
             </tr>
             <tr>
               <td><strong>v2.0</strong></td>
-              <td>职业方向输入 + 项目执行包</td>
-              <td>双模式架构（探索模式 + 精准模式）· 职业方向输入替代 JD 粘贴为默认入口 · 聚合能力画像 · 项目原型库 · 三步匹配算法 · 项目执行包</td>
+              <td>目标岗位输入 + 项目执行包</td>
+              <td>双模式架构（探索模式 + 精准模式）· 目标岗位输入替代 JD 粘贴为默认入口 · Agent 搜索多岗位 JD 聚合分析 · 项目原型库 · 三步匹配算法 · 项目执行包</td>
               <td><span class="tag tag-p3">待规划</span></td>
             </tr>
           </tbody>
@@ -1103,7 +1070,7 @@
       </div>
 
       <div class="callout">
-        <strong>v2.0 愿景：</strong>从"基于单条 JD 的项目建议"深化为"基于职业方向的项目建议 + 执行包"。V1 保留为精准模式（高级功能），V2 探索模式成为默认入口。用户在还没找到岗位时就能开始准备。
+        <strong>v2.0 愿景：</strong>从"基于单条 JD 的项目建议"深化为"基于目标岗位的项目建议 + 执行包"。单个 JD 覆盖片面——不同公司招聘信息写法各异，求职者需要综合多个岗位。V2 由 Agent 搜索同类岗位 JD、聚合分析后给出建议。V1 保留为精准模式（粘贴 JD），V2 探索模式成为默认入口。
       </div>
 
       <!-- V2.0 功能清单 -->
@@ -1118,9 +1085,9 @@
             <tbody>
               <tr>
                 <td><span class="tag tag-p0">P0</span></td>
-                <td><strong>职业方向输入</strong></td>
+                <td><strong>目标岗位输入</strong></td>
                 <td>必须粘贴 JD（岗位职责 + 任职要求）</td>
-                <td>输入"AI产品经理"即可，不用先找到具体岗位。降低使用门槛，覆盖迷茫期用户</td>
+                <td>输入"AI产品经理"即可，不用粘贴整段 JD。Agent 自动搜索同类岗位的招聘信息，综合多个 JD 给出建议</td>
               </tr>
               <tr>
                 <td><span class="tag tag-p0">P0</span></td>
@@ -1132,7 +1099,7 @@
                 <td><span class="tag tag-p1">P1</span></td>
                 <td><strong>聚合能力画像</strong></td>
                 <td>基于单条 JD 提取能力，可能偏差</td>
-                <td>预聚合 100+ 同类 JD，统计每个能力的出现频率和权重。用户输入职业时直接查表</td>
+                <td>预聚合 100+ 同类 JD，统计每个能力的出现频率和权重。用户输入目标岗位时直接查表</td>
               </tr>
               <tr>
                 <td><span class="tag tag-p1">P1</span></td>

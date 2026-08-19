@@ -37,10 +37,10 @@
 | 页面 | 文件 | 说明 |
 |------|------|------|
 | **VoiceMap** | `voicemap.html` | 用户研究模块。采集牛客网/知乎/V2EX/小红书四平台 108 条真实求职者发言，AI 主题聚类为 7 大痛点 |
-| **Transit** | `index.html` | 核心产品。AI Agent 驱动的求职项目路线图生成器，粘贴 JD → 自动提取能力点 → 搜索真实资源 → 生成 3 个项目建议 |
+| **Transit** | `index.html` | 核心产品。AI Agent 驱动的求职项目路线图生成器，输入目标岗位 → AI Agent 搜索多个 JD → 综合能力要求 → 搜索真实资源 → 生成项目建议与执行包 |
 | **PRD** | `prd.html` | Transit 产品需求文档 v1.0，10 章节，含 V2.0 迭代规划 |
 | **Screen** | `screen.html` | 简历优化工具。AI 分析简历与 JD 匹配度，给出逐句优化建议 |
-| **Growth** | `growth.html` | 增长策略模块。Transit 的增长飞轮与冷启动方案 |
+| **Growth** | `growth.html` | 增长策略模块。数据驱动的增长方案：用的人越多，推荐越准 |
 | **Presentation** | `presentation.html` | 项目演示文稿 |
 
 ## 技术栈

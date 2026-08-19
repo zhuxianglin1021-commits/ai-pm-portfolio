@@ -959,10 +959,7 @@
     <div class="nav-inner">
       <a href="voicemap.html" class="nav-item"><span class="nav-dot" style="background:var(--l3)"></span>VoiceMap</a>
       <a href="index.html" class="nav-item active"><span class="nav-dot" style="background:var(--l1)"></span>Transit</a>
-      <a href="prd.html" class="nav-item"><span class="nav-dot" style="background:var(--l5)"></span>PRD</a>
       <a href="screen.html" class="nav-item"><span class="nav-dot" style="background:var(--l4)"></span>Screen</a>
-      <a href="growth.html" class="nav-item"><span class="nav-dot" style="background:var(--l2)"></span>Growth</a>
-      <a href="presentation.html" class="nav-item"><span class="nav-dot" style="background:var(--text-tertiary)"></span>Presentation</a>
     </div>
   </nav>
 
@@ -1076,6 +1073,18 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    /* ====== 运行环境检测：file:// 直接打开时 AI 服务无法工作 ====== */
+    (function () {
+      if (window.location.protocol === 'file:') {
+        var banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#E15A42;color:#fff;' +
+          'padding:12px 20px;font-size:14px;line-height:1.6;text-align:center;font-family:system-ui,sans-serif;';
+        banner.innerHTML = '⚠️ 当前是直接打开的文件，AI 功能无法连接。请在终端运行 <b>node server.js</b> 后，' +
+          '访问 <b>http://localhost:3000</b> 使用（Key 填在项目根目录 .env 文件里）。';
+        document.body.appendChild(banner);
+      }
+    })();
+
     /* ====== Constants ====== */
     const LINE_COLORS = ['#E15A42', '#1D8F80', '#E5A23A'];
     const LINE_NAMES = ['L1', 'L2', 'L3'];
